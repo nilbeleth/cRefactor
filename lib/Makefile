@@ -6,18 +6,45 @@
 #
 
 
-SRC = .
+SRC = ./src
 BUILD = ./obj
-SOURCES = main.cpp
+SOURCES = resource.cpp \
+	  task.cpp renamer.cpp
+
+CXX = g++
+LLVMCOMPONENTS := cppbackend
+RTTIFLAG := -fno-rtti
+LLVMCONFIG := /usr/bin/llvm-config
+
+CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG)
+LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
+
 
 OBJECTS = $(patsubst %,$(BUILD)/%,$(SOURCES:.cpp=.o))
-CXX = g++
 CPPFLAGS = 						# preprocessor flags
-CXXFLAGS = -std=c++98 -Wall -Wextra -pedantic -W -g	# compile flags
-LDFLAGS =						# linker flags
-
-LIBS = 
-
+$(CXXFLAGS) = -std=c++98 -Wall -Wextra -pedantic -W -g $(CXXFLAGS)
+LIBS = \
+		-lclangTooling\
+		-lclangFrontendTool\
+		-lclangFrontend\
+		-lclangDriver\
+		-lclangSerialization\
+		-lclangCodeGen\
+		-lclangParse\
+		-lclangSema\
+		-lclangStaticAnalyzerFrontend\
+		-lclangStaticAnalyzerCheckers\
+		-lclangStaticAnalyzerCore\
+		-lclangAnalysis\
+		-lclangARCMigrate\
+		-lclangRewriteFrontend\
+		-lclangRewriteCore\
+		-lclangEdit\
+		-lclangAST\
+		-lclangLex\
+		-lclangBasic\
+		$(shell $(LLVMCONFIG) --libs)\
+		-lcurses
 PROG = librefactor
 
 
@@ -35,19 +62,20 @@ pre-build:
 
 
 build: $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $(PROG) $(LIBS)
+	ar rcs $(PROG) $^
+#	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $(PROG) $(LIBS) $(LLVMLDFLAGS)
 
 
 $(BUILD)/%.o: $(SRC)/%.cpp
-	make pre-build
+	@make pre-build
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 
 static: $(OBJECTS)
 	ar rcs $(PROG).a $^
 
-shared: $(OBJECTS)
-	$(CXX) -shared -Wl,-soname,$(PROG).so.1 -o $(PROG).so.1.0.1 $^
+#ashared: $(OBJECTS)
+#	$(CXX) -shared -Wl,-soname,$(PROG).so.1 -o $(PROG).so.1.0.1 $^
 
 
 install:
@@ -61,6 +89,7 @@ clean:
 	rm -rf $(BUILD)
 	rm -f doxygen.log
 	rm -rf ./doc/html
+	rm -rf $(PROG)
 
 purge:
 	@make clean
