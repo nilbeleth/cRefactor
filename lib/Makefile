@@ -9,7 +9,8 @@
 SRC = ./src
 BUILD = ./obj
 SOURCES = resource.cpp \
-	  task.cpp renamer.cpp
+	  task.cpp renamer.cpp \
+	  preprocessorcontext.cpp logger.cpp
 
 CXX = g++
 LLVMCOMPONENTS := cppbackend
@@ -62,8 +63,8 @@ pre-build:
 
 
 build: $(OBJECTS)
-	ar rcs $(PROG) $^
-#	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $(PROG) $(LIBS) $(LLVMLDFLAGS)
+	ar ruv $(PROG) $^
+	ranlib $(PROG)
 
 
 $(BUILD)/%.o: $(SRC)/%.cpp

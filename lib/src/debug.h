@@ -3,17 +3,15 @@
 #include <iostream>
 #include <ctime>
 
-#include "settings.h"
 
 
-
-#ifdef __WIN
-    #include <windows.h>
-    #ifdef ERROR
-        #undef ERROR
-    #endif
-#else
-#define RED "\33[22;31m"
+//#ifdef __WIN
+//    #include <windows.h>
+//    #ifdef ERROR
+//        #undef ERROR
+//    #endif
+//#else
+/*#define RED "\33[22;31m"
 #define LRED "\33[01;21m"
 #define GREEN "\33[22;32m"
 #define LGREEN "\33[01;32m"
@@ -25,22 +23,22 @@
 #define LCYAN "\33[22;36m"
 #define MAGENTA "\33[22;35m"
 #define LMAGENTA "\33[01;35m"
-#define NOCOLOR "\33[0m"
-#endif
+#define NOCOLOR "\33[0m"*/
+//#endif
 
 
 #ifndef __WIN
 #define PHASE(X) \
     { \
-        std::cout << YELLOW << "Running phase: " << X << "  ( " << ((double) clock() / CLOCKS_PER_SEC ) << "s )" << NOCOLOR << std::endl; \
+        std::cout << "\33[01;33m" << "Running phase: " << X << "  ( " << ((double) clock() / CLOCKS_PER_SEC ) << "s )" << "\33[0m" << std::endl; \
     }
 
 #define ERROR(X) \
-		{ std::cerr << RED << "Error: " << X  << " -> (" << __FILE__ << ":" << std::dec << __LINE__ << ")" << NOCOLOR << std::endl; }
+		{ std::cerr << "\33[22;31m" << "Error: " << X  << " -> (" << __FILE__ << ":" << std::dec << __LINE__ << ")" << "\33[0m" << std::endl; }
 
 #define WARNING(X) \
     { \
-        std::cerr << CYAN << "Warning: " << X  << " -> (" << __FILE__ << ":" << std::dec << __LINE__ << ")" << NOCOLOR << std::endl; \
+        std::cerr << "\33[22;36m" << "Warning: " << X  << " -> (" << __FILE__ << ":" << std::dec << __LINE__ << ")" << "\33[0m" << std::endl; \
     }
 
 #define DEBUG(X) \
@@ -50,7 +48,7 @@
 
 #define INFO(X) \
     { \
-        std::cerr << GREEN << "Info: " << X << NOCOLOR << std::endl; \
+        std::cerr << "\33[22;32m" << "Info: " << X << "\33[0m" << std::endl; \
     }
 #else
 #define PHASE(X) \

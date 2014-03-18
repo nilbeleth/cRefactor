@@ -1,7 +1,9 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 #include <string>
-#include <vector>
+#include <set>
+
+#include "logger.h"
 
 
 
@@ -45,8 +47,8 @@ class Resource
         /** Default destructor */
         virtual ~Resource() {}
 
-        virtual int load(const std::string filename) =0;
-        virtual int unload(const std::string filename) =0;
+        virtual int load(const std::string& filename) =0;
+        virtual int unload(const std::string& filename) =0;
 
         //virtual bool isDirty() const =0;
 
@@ -65,13 +67,17 @@ class Resource
 class File : public Resource
 {
     public:
-        File();
+        File(const std::string& name);
         ~File();
 
-        virtual int load(const std::string filename);
-        virtual int unload(const std::string filename);
+        std::string getName() const { return m_name; }
+        //std::string getPath() const;
+        //std::string getAbsPath() const;
 
-        static bool exists(std::string filename);
+        virtual int load(const std::string& filename);
+        virtual int unload(const std::string& filename);
+
+        static inline bool exists(const std::string& filename);
 
         virtual std::string asString() const;
     protected:
@@ -90,16 +96,29 @@ class Project : public Resource
 {
     public:
         Project();
+        Project(const std::string dir);
         ~Project();
 
-        virtual int load(const std::string filename);
-        virtual int unload(const std::string filename);
+        virtual int load(const std::string& filename);
+        virtual int unload(const std::string& filename);
+
+        // TODO (nilbeleth#1#): daky pretazenie na + alebo porovnavanie
+
+        Logger* getLogger() const { return m_logger; }
+
+        //bool validate(const std::string dir);
+        //addObserver();
+        //removeObserver();
+        //getFile(const std::string filename)
+
+
 
         virtual std::string asString() const;
     protected:
 
     private:
-        std::vector<std::string> m_sources;
+        std::set<File*> m_sources;
+        Logger* m_logger;
 
 };
 

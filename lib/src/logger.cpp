@@ -1,16 +1,73 @@
+#include <ctime>
+#include <sstream>
+#include <iostream>
 #include "logger.h"
+#include "debug.h"
+
+#define SATISFY_LVL(X,LVL) ( (X) & (Y) ? true : false )
 
 
 using namespace refactor;
 
 
 
-Logger::Logger()
+std::string Logger::getTime() const
 {
-    //ctor
+    std::stringstream ss;
+    time_t rawtime;
+    struct tm *timeinfo;
+    char buffer[80];
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    strftime(buffer, 80, "%d/%m/%y %T", timeinfo);
+
+    ss << buffer;
+
+    return ss.str();
 }
 
-Logger::~Logger()
+
+////
+//  StdLogger
+////
+void StdLogger::log(const std::string msg, const int severity) const
 {
-    //dtor
+    switch(severity)
+    {
+        case V_Info:
+            info(msg);
+            break;
+        case V_Warning:
+            warn(msg);
+            break;
+        case V_Error:
+            error(msg);
+            break;
+        case V_Fatal:
+            fatal(msg);
+            break;
+        default:
+            WARNING("Invalid severity.")
+    }
+}
+
+void StdLogger::info(const std::string msg) const
+{
+    std::cerr << getTime() << " INFO : " << msg << std::endl;
+}
+
+void StdLogger::warn(const std::string msg) const
+{
+    std::cerr << getTime() << " WARN : " << msg << std::endl;
+}
+
+void StdLogger::error(const std::string msg) const
+{
+    std::cerr << getTime() << " ERROR: " << msg << std::endl;
+}
+
+void StdLogger::fatal(const std::string msg) const
+{
+    std::cerr << getTime() << " FATAL: " << msg << std::endl;
 }

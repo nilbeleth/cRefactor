@@ -18,15 +18,18 @@ class Renamer : public Task
         /** Default destructor */
         virtual ~Renamer();
 
-        static Task* construct(const Resource& resource, std::string varName);
-        virtual void getChanges() const;
-        virtual void commit();
+        static Task* construct(const Resource& resource, const std::string& symbol);
+        // some location of desired change
+        static Task* construct(const Resource& resource, const int loc);
 
-    private:
+        virtual void getChanges() const {}
+        virtual void commit() {}
+
+    protected:
         /** Hide default constructor */
         Renamer() {}
 
-
+    private:
         Renamer* m_impl;
 };
 
