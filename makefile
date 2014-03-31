@@ -11,6 +11,7 @@ SOURCES = main.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXES = $(OBJECTS:.o=)
 LIBS = \
+				-lrefactor\
 				-lclangTooling\
 				-lclangFrontendTool\
 				-lclangFrontend\
@@ -31,13 +32,15 @@ LIBS = \
 				-lclangLex\
 				-lclangBasic\
 				$(shell $(LLVMCONFIG) --libs)\
-                -lcurses\
-		-lrefactor
+				-lcurses
 
-all: $(OBJECTS) $(EXES)
+all: build
+
+build: $(OBJECTS)
+	$(CXX) -o app $^ $(LIBS) $(LLVMLDFLAGS)
 
 %: %.o
-	$(CXX) -o $@ $< $(CXXFLAGS) $(LLVMLDFLAGS) $(LIBS)
+	$(CXX) -o $@ $< $(CXXFLAGS)
 
 clean:
 	-rm -f $(EXES) $(OBJECTS) *~

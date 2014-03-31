@@ -63,12 +63,10 @@ pre-build:
 	-mkdir -p $(BUILD)
 
 
-build: $(OBJECTS) $
-	$(CXX) -o app $^ $(LIBS) $(LLVMLDFLAGS)
-	
-#-lLLVMCppBackendCodeGen -lLLVMCppBackendInfo -lLLVMTarget -lLLVMCore -lLLVMMC -lLLVMObject -lLLVMSupport
-#ar rvs $(PROG) $^
-#ranlib $(PROG)
+build: $(OBJECTS)
+	ar rvs $(PROG) $^
+	ranlib $(PROG)
+#$(CXX) -o app $^ $(LIBS) $(LLVMLDFLAGS)
 
 
 $(BUILD)/%.o: $(SRC)/%.cpp
