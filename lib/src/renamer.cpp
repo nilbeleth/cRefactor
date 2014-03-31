@@ -15,10 +15,11 @@ using namespace refactor;
 /**
  *
  */
-class RenamingVisitor : public clang::RecursiveASTVisitor<RenamingVisitor>
+class RenamingVisitor/* : public clang::RecursiveASTVisitor<RenamingVisitor>*/
 {
     public:
         RenamingVisitor() {}
+        virtual ~RenamingVisitor() {}
 
         bool VisitFunctionDecl(FunctionDecl *f);
     protected:
@@ -34,22 +35,22 @@ bool RenamingVisitor::VisitFunctionDecl(FunctionDecl *f)
 
 
 /**
- *
+ * @brief
  */
-class RenamingConsumer : /*public Renamer,*/ public ASTConsumer
+class RenamingConsumer : public ASTConsumer
 {
     public:
-        RenamingConsumer() : ASTConsumer() {}
+        RenamingConsumer() {}
         virtual ~RenamingConsumer() {}
 
         // just traverse all top declarations
-        virtual bool HandleTopLevelDecl(DeclGroupRef d);
+        bool HandleTopLevelDecl(DeclGroupRef d);
 
-        void setNewSymbolName(const string& name) { m_newName; }
+        //void setNewSymbolName(const string& name) { m_newName; }
     protected:
     private:
-        string m_oldName;
-        string m_newName;
+        //string m_oldName;
+        //string m_newName;
 };
 
 
@@ -58,16 +59,12 @@ bool RenamingConsumer::HandleTopLevelDecl(DeclGroupRef d)
     RenamingVisitor rv;
     for(clang::DeclGroupRef::iterator it = d.begin(), e = d.end(); it != e; ++it)
     {
-        rv.TraverseDecl(*it);
+        //rv.TraverseDecl(*it);
     }
 
     return true;
 }
-/**
- * @brief
- *
- *
- */
+
 
 
 /*****************************

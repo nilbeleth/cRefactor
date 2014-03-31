@@ -10,14 +10,15 @@ SRC = ./src
 BUILD = ./obj
 SOURCES = resource.cpp \
 	  task.cpp renamer.cpp \
-	  preprocessorcontext.cpp logger.cpp
+	  preprocessorcontext.cpp logger.cpp \
+	  main.cpp
 
 CXX = g++
 LLVMCOMPONENTS := cppbackend
 RTTIFLAG := -fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
 
-CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG)
+CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -I./src $(RTTIFLAG)
 LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 
@@ -56,19 +57,21 @@ PROG = librefactor
 # Object targets
 #
 
-all: build
+all: pre-build build
 
 pre-build:
-	mkdir -p $(BUILD)
+	-mkdir -p $(BUILD)
 
 
-build: $(OBJECTS)
-	ar ruv $(PROG) $^
-	ranlib $(PROG)
+build: $(OBJECTS) $
+	$(CXX) -o app $^ $(LIBS) $(LLVMLDFLAGS)
+	
+#-lLLVMCppBackendCodeGen -lLLVMCppBackendInfo -lLLVMTarget -lLLVMCore -lLLVMMC -lLLVMObject -lLLVMSupport
+#ar rvs $(PROG) $^
+#ranlib $(PROG)
 
 
 $(BUILD)/%.o: $(SRC)/%.cpp
-	@make pre-build
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 

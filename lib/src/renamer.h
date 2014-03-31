@@ -20,7 +20,7 @@ class Renamer : public Task
 
         static Task* construct(const Resource& resource, const std::string& symbol);
         // some location of desired change
-        static Task* construct(const Resource& resource, const int loc);
+        //static Task* construct(const Resource& resource, const int loc);
 
         virtual void getChanges() const {}
         virtual void commit() {}

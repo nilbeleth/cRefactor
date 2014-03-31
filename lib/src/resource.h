@@ -111,6 +111,8 @@ class Project : public Resource
         //removeObserver();
         //getFile(const std::string filename)
 
+        //addLibraries()        // where ti search for headers
+
 
 
         virtual std::string asString() const;
