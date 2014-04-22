@@ -3,28 +3,100 @@
 #include <string>
 
 #include "resource.h"
+#include "replacement.h"
 
 
+/**
+ * @mainpage The mainpage documentation
+ *
+ * @author Matej Odalos <xodalo00@stud.fit.vutbr.cz>
+ * @date       April 22, 2014
+ * @version    0.0.1 (pre-alpha)
+ *
+ * @section intro Introduction
+ * Master thesis.
+ *
+ * @section features What can it do?
+ * @subsection renamer Renaming identifier
+ * Rename an identidier.
+ *
+ * @subsection reformatter Formatting code
+ * Format source files.
+ *
+ * @subsection extractor Method extraction
+ * Extract method.
+ *
+ * @section examples User examples
+ * A nice example.
+ *
+ * @section future Future work
+ * TODO: I have really lot of work to do here.
+ */
 
 namespace refactor
 {
 
 
 /**
+ * @brief An abstract refactoring task.
  *
+ * The task class is an abstract interface for
+ * a refactoring task. This interface provides
+ * all interaction needed to perform some task
+ * on group of files.
+ *
+ * The task should have a very short liveness.
+ * Therefore after task construction (provided
+ * be concrete task constructor) there is
+ * no possibility to add, change or erase
+ * any files from analysis. Rather than modify
+ * an existing task one should construct a new
+ * one.
+ *
+ * The replacements could be applied one by one
+ * or all at once.
  */
 class Task
 {
     public:
-        /** Default destructor */
+        /** @brief Default destructor */
         virtual ~Task();
 
-        static Task* construct(const Resource& resource, const std::string& symbol);
-        // some location of desired change
-        static Task* construct(const Resource& resource, const int loc);
+        /**
+         * Process the possible changes to
+         * all files done by refactoring task.
+         * @note Error can occured also from parsing
+         *       error.
+         * @return  Returns 1 if processing fails, 0 otherwise.
+         */
+        virtual int analyze() =0;
 
-        virtual void getChanges() const =0;
-        virtual void commit() =0;
+        /**
+         * Get all possible replacements determined
+         * by analysis.
+         */
+        virtual Replacements getChanges() const =0;
+
+        /**
+         * Apply a replacement if it's possible.
+         * @param replace   A replacement to be apllied.
+         * @return          Return 0 if the replacement
+         *                  is successfully apllied, 1 otherwise.
+         */
+        virtual int applyChange(const Replacement& replace) const =0;
+
+        /**
+         * Apply all possible replacements.
+         * @return  Has been the replacement successfully apllied?
+         * @retval  fails
+         *          <ul>
+         *              <li> 0 = Success
+         *              <li> 1 = Failure
+         *          </ul>
+         */
+        virtual int commit() =0;
+
+
     protected:
         /** Hide default constructor */
         Task() {}

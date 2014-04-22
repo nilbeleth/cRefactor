@@ -8,12 +8,11 @@ namespace refactor
 
 
 /**
- * Describes different types of messages
- * ....
+ * Describes different types of messages.
  */
 enum TLogLevel
 {
-    V_None      = 0,
+    V_Ignored   = 0,
     V_Info      = 1,
     V_Warning   = 2,
     V_Error     = 4,
@@ -23,6 +22,8 @@ enum TLogLevel
 
 
 /**
+ * @brief An interface for logging messages.
+ *
  *
  */
 class Logger
@@ -77,6 +78,8 @@ class Logger
 
 
 /**
+ * @brief A logger writing to stdout.
+ *
  *
  */
 class StdLogger : public Logger

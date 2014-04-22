@@ -8,17 +8,16 @@
 
 SRC = ./src
 BUILD = ./obj
-SOURCES = resource.cpp \
-	  task.cpp renamer.cpp \
-	  preprocessorcontext.cpp logger.cpp \
-	  main.cpp
+SOURCES = location.cpp resource.cpp replacement.cpp \
+	  task.cpp renamer.cpp reformatter.cpp extractor.cpp \
+	  logger.cpp utils.cpp
 
 CXX = g++
 LLVMCOMPONENTS := cppbackend
-RTTIFLAG := -fno-rtti
+RTTIFLAG := #-fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
 
-CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -I./src $(RTTIFLAG)
+CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -I./src $(RTTIFLAG) -g
 LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 

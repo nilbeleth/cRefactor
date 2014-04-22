@@ -1,43 +1,40 @@
-#ifndef RENAMER_H
-#define RENAMER_H
+#ifndef EXTRACTOR_H
+#define EXTRACTOR_H
 #include "task.h"
-#include "resource.h"
 #include "location.h"
-#include <string>
+
 
 
 namespace refactor
 {
 
 
-
 /**
- * @brief Rename a identifier.
+ * @brief Extract a function.
  *
- *
+ * Take a snippet of function and method and
+ * extract it as new function.
  */
-class Renamer : public Task
+class Extractor : public Task
 {
     public:
-        /**
-         * Construct a new refactoring task to rename a symbol.
-         * @param resource      Gathers the source files on which should be the task performed.
-         * @param origSymbol    The name of original symbol.
-         * @param newSymbol     The new name for symbol.
-         */
-        Renamer(Resource* resource, const std::string& origSymbol, const std::string& newSymbol);
+        /** Default constructor */
+        Extractor(Resource* resource, const Location& begin, const Location& end);
+
+        /** */
+        Extractor(Resource* resource, const LocationRange& range);
+
+        /** Default destructor */
+        virtual ~Extractor();
 
 
         /**
-         * Construct a new refactoring task to rename a symbol.
-         * @param resource
-         * @param loc
-         * @param newSymbol
+         * Try to define the new function as class method.
+         * If original function wasn't class method, just
+         * define it as regular function (this is also
+         * the default behavior).
          */
-        Renamer(Resource* resource, const Location& loc, const std::string& newSymbol);
-
-        /** Default destructor. */
-        virtual ~Renamer();
+        void tryAsClassMethod();
 
 
         /**
@@ -73,10 +70,7 @@ class Renamer : public Task
 
     protected:
     private:
-        Resource* _resource;
-        std::string _origSymbol;
-        std::string _newSymbol;
 };
 
 }   // end namespace refactor
-#endif // RENAMER_H
+#endif // EXTRACTOR_H

@@ -1,6 +1,6 @@
 CXX := g++
 LLVMCOMPONENTS := cppbackend
-RTTIFLAG := -fno-rtti
+RTTIFLAG := #-fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
 
 CXXFLAGS := -I./lib -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -g $(RTTIFLAG)

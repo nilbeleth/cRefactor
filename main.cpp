@@ -9,6 +9,7 @@ using namespace std;
 using namespace refactor;
 
 
+
 //
 int main(int argc, char* argv[])
 {
@@ -22,7 +23,8 @@ int main(int argc, char* argv[])
 
 
     // 2. step: creating a new renaming task
-    Task* renamer = Renamer::construct(testing, "testing");
+    string old = "x", novy = "y";
+    Renamer* renamer = new Renamer(&testing, old, novy);
 
     // 3. step: some feedback about changes
     // 4. step: commit changes
