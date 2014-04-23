@@ -12,6 +12,33 @@ namespace refactor
 
 
 /**
+ * @brief Identifiers.
+ *
+ * Describe the types of identifiers.
+ */
+enum IdentType
+{
+    I_Variable,         /**< A name of variable. */
+    I_ClassName,        /**< A class name. */
+    I_StructName,       /**< A structure name. */
+    I_UnionName,        /**< An union name. */
+    I_EnumName,         /**< An enumeration name. */
+    I_ClassMember,      /**< A class member variable. */
+    I_StructMember,     /**< A struct member variable. */
+    I_UnionMemeber,     /**< A union member variable. */
+    I_EnumItem,         /**< An enumeration item. */
+    I_FunctionName,     /**< Function. */
+    I_MethodName,       /**< A class instance method.*/
+    I_Typedef,          /**< A type definition. */
+    I_Label,            /**< A label name. */
+    I_MacroName,        /**< */
+    I_MacroParm,        /**< */
+    I_Namespace,        /**< Namespace identifier. */
+    I_All
+};
+
+
+/**
  * @brief Rename a identifier.
  *
  *
@@ -38,6 +65,12 @@ class Renamer : public Task
 
         /** Default destructor. */
         virtual ~Renamer();
+
+
+        /**
+         * Rename only identifier with given type.
+         */
+        void restrictTo(const IdentType type) { m_type = type; }
 
 
         /**
@@ -76,6 +109,7 @@ class Renamer : public Task
         Resource* _resource;
         std::string _origSymbol;
         std::string _newSymbol;
+        IdentType m_type;
 };
 
 }   // end namespace refactor

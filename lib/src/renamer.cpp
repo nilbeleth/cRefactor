@@ -133,7 +133,7 @@ class RenamingActionFactory
  *       Class Renamer       *
  *****************************/
 Renamer::Renamer(Resource* resource, const string& origSymbol, const string& newSymbol)
-    : _resource(resource), _origSymbol(origSymbol), _newSymbol(newSymbol)
+    : _resource(resource), _origSymbol(origSymbol), _newSymbol(newSymbol), m_type(I_All)
 {
     analyze();
 }
@@ -141,7 +141,7 @@ Renamer::Renamer(Resource* resource, const string& origSymbol, const string& new
 
 //
 Renamer::Renamer(Resource* resource, const Location& loc, const string& newSymbol)
-    : _resource(resource), _newSymbol(newSymbol)
+    : _resource(resource), _newSymbol(newSymbol), m_type(I_All)
 {
     (void) resource;
     (void) loc;
