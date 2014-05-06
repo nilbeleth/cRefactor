@@ -42,6 +42,7 @@ LIBS = \
 		-lclangRewriteCore\
 		-lclangEdit\
 		-lclangAST\
+		-lclangASTMatchers\
 		-lclangLex\
 		-lclangBasic\
 		$(shell $(LLVMCONFIG) --libs)\

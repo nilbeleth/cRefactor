@@ -18,23 +18,23 @@ namespace refactor
  */
 enum IdentType
 {
-    I_Variable,         /**< A name of variable. */
-    I_ClassName,        /**< A class name. */
-    I_StructName,       /**< A structure name. */
-    I_UnionName,        /**< An union name. */
-    I_EnumName,         /**< An enumeration name. */
-    I_ClassMember,      /**< A class member variable. */
-    I_StructMember,     /**< A struct member variable. */
-    I_UnionMemeber,     /**< A union member variable. */
-    I_EnumItem,         /**< An enumeration item. */
-    I_FunctionName,     /**< Function. */
-    I_MethodName,       /**< A class instance method.*/
-    I_Typedef,          /**< A type definition. */
-    I_Label,            /**< A label name. */
-    I_MacroName,        /**< */
-    I_MacroParm,        /**< */
-    I_Namespace,        /**< Namespace identifier. */
-    I_All
+    I_Variable      =    1,     /**< A name of variable. */
+    I_ClassName     =    2,     /**< A class name. */
+    I_StructName    =    4,     /**< A structure name. */
+    I_UnionName     =    8,     /**< An union name. */
+    I_EnumName      =   16,     /**< An enumeration name. */
+    I_ClassMember   =   32,     /**< A class member variable. */
+    I_StructMember  =   64,     /**< A struct member variable. */
+    I_UnionMemeber  =  128,     /**< A union member variable. */
+    I_EnumItem      =  256,     /**< An enumeration item. */
+    I_FunctionName  =  512,     /**< Function. */
+    I_MethodName    = 1024,     /**< A class instance method.*/
+    I_Typedef       = 2048,     /**< A type definition. */
+    I_Label         = 4096,     /**< A label name. */
+    I_Namespace     = 8192,     /**< Namespace identifier. */
+//    I_MacroName,        /**< */
+//    I_MacroParm,        /**< */
+    I_All           = 16383
 };
 
 
@@ -70,7 +70,13 @@ class Renamer : public Task
         /**
          * Rename only identifier with given type.
          */
-        void restrictTo(const IdentType type) { m_type = type; }
+        void restrictToType(const IdentType type) { m_type = type; }
+
+
+        /**
+         *
+         */
+        void derivedFrom(const std::string className);
 
 
         /**
@@ -103,9 +109,22 @@ class Renamer : public Task
          */
         virtual int commit();
 
+        const Resource* getResource() const { return _resource; }
+        std::string getOrigSymbol() const { return _origSymbol; }
+        std::string getNewSymbol() const { return _newSymbol; }
+        IdentType getRestrictType() const { return m_type; }
+
 
     protected:
     private:
+        // make object noncopyable becuase it holds pointer
+        Renamer(const Renamer &);
+        const Renamer& operator=(const Renamer &);
+
+        class RenamingStrategy;
+        RenamingStrategy* m_impl;
+
+
         Resource* _resource;
         std::string _origSymbol;
         std::string _newSymbol;

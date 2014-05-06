@@ -283,7 +283,6 @@ string Project::asString() const
             ss << "\t" << (*it)->asString() << endl;
     }
 
-    generateJSONDatabase();
     return ss.str();
 }
 

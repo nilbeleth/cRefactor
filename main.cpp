@@ -18,12 +18,12 @@ int main(int argc, char* argv[])
     Project testing;
     for(int i = 1; i < argc; ++i)
         testing.load(argv[i]);
-    cout << testing.asString();
+    //cout << testing.asString();
 
 
 
     // 2. step: creating a new renaming task
-    string old = "x", novy = "y";
+    string old = "method", novy = "Foo";
     Renamer* renamer = new Renamer(&testing, old, novy);
 
     // 3. step: some feedback about changes

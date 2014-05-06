@@ -1,5 +1,6 @@
 #include "renamer.h"
 #include "debug.h"
+#include "utils.h"
 
 #include <clang/Driver/Options.h>
 #include <clang/AST/AST.h>
@@ -12,20 +13,19 @@
 #include <clang/Tooling/Tooling.h>
 #include <clang/Rewrite/Core/Rewriter.h>
 
+#include <clang/ASTMatchers/ASTMatchFinder.h>       // TODO: pokus
+#include <clang/ASTMatchers/ASTMatchers.h>
+
 #include <iostream>
 #include <sstream>
 
 
 using namespace std;
 using namespace clang;
-using namespace clang::driver;
+//using namespace clang::driver;
 using namespace clang::tooling;
+//using namespace clang::ast_matchers;
 using namespace refactor;
-
-
-// TODO (nilbeleth#1#): to predavanie by nemalo ist cez globalne premenne, co ked budeme mat viac instancii naraz
-string oldSymbol;
-string newSymbol;
 
 
 
@@ -35,24 +35,17 @@ string newSymbol;
 class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingMutator>
 {
     public:
-        explicit RenamingMutator()
-            : _astContext(NULL)
+        explicit RenamingMutator(const Renamer* renamer)
+            : _astContext(NULL), _renamer(renamer)
         { }
 
-        virtual void HandleTranslationUnit(ASTContext &context)
-        {
-            _astContext = &context;
+        // set new context and traverse AST
+        virtual void HandleTranslationUnit(ASTContext &context);
 
-            TranslationUnitDecl *D = context.getTranslationUnitDecl();
-            // Run Recursive AST Visitor
-            TraverseDecl(D);
-
-            _astContext = NULL;
-        }
-
-        virtual bool VisitNamedDecl(NamedDecl* decl)
-        {
+        virtual bool VisitNamedDecl(NamedDecl* decl);
+/*        {
             string name = decl->getNameAsString();
+            string oldSymbol = _renamer->getOrigSymbol();
 
             // destructor has a ~ before, so we need to know if it's a destructor or not
             if(isa<CXXDestructorDecl>(decl))
@@ -77,11 +70,15 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
 
             return true;
         }
+*/
 
+        virtual bool VisitVarDecl(VarDecl* decl);
+        //
         virtual bool VisitDeclRefExpr(DeclRefExpr* expr)
         {
             // is this somewhere declared?
             NamedDecl* decl = expr->getFoundDecl();
+            string oldSymbol = _renamer->getOrigSymbol();
             if( decl )
             {
                 string name = expr->getNameInfo().getAsString();
@@ -111,7 +108,79 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
     protected:
     private:
         ASTContext* _astContext;
+        const Renamer* _renamer;
 };
+
+//
+void RenamingMutator::HandleTranslationUnit(ASTContext& context)
+{
+    _astContext = &context;
+
+    TranslationUnitDecl* D = context.getTranslationUnitDecl();
+    TraverseDecl(D);
+
+    _astContext = NULL;
+}
+
+//
+bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
+{
+    SourceLocation loc = decl->getLocation();
+    string name = decl->getNameAsString();
+
+    if( !loc.isValid() )
+        return true;
+
+    if( _astContext->getSourceManager().isInSystemHeader(loc) )
+        return true;
+
+    // priamo deklaracia s tymto nazvom
+    if( name == _renamer->getOrigSymbol() )
+    {
+        cout << "Declaration of (" << _renamer->getOrigSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+        //string file = _astContext->getSourceManager().getFilename(loc);
+        //cout << file << endl;
+    }
+    //
+    //if( !EnumConstantDecl::classof(decl) )
+    //    return true;
+    //decl->printQualifiedName(llvm::outs());
+    return true;
+}
+
+bool RenamingMutator::VisitVarDecl(VarDecl* decl)
+{
+    //string name = decl->getNameAsString();
+    //QualType type = decl->getType();
+    //SourceLocation loc = decl->getLocation();   // typeloc cez decl->getTypeSourceInfo()->getTypeLoc()
+
+    QualType typeQT = decl->getType();
+    const Type* type = typeQT.getTypePtrOrNull();
+    SourceLocation loc = decl->getTypeSpecStartLoc();
+
+
+    if( !loc.isValid() )
+        return true;
+
+    if( _astContext->getSourceManager().isInSystemHeader(loc) )
+        return true;
+
+    string name = typeQT.getAsString();
+    size_t pos = name.find(" " + _renamer->getOrigSymbol());
+    if( pos != string::npos )
+    {
+        cout << "Type usage of (" << _renamer->getOrigSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+    }
+
+    //cout << name << endl;
+
+    /*
+    if( type != NULL )
+    {
+        cout << "\tEnumeration: " << (type->isEnumeralType() ? "true" : "false") << endl;
+    }*/
+    return true;
+}
 
 
 
@@ -120,14 +189,36 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
  **********************************/
 class RenamingActionFactory
 {
+    const Renamer* _renamer;
+
     public:
+        RenamingActionFactory(const Renamer* renamer)
+            : _renamer(renamer)
+        { }
+
         virtual clang::ASTConsumer *newASTConsumer()
         {
-            return new RenamingMutator();
+            return new RenamingMutator(_renamer);
         }
 };
 
 
+
+/**
+ * @brief
+ *
+ *
+ */
+class RenamingStrategy
+{
+    public:
+        RenamingStrategy();
+        ~RenamingStrategy();
+    protected:
+
+    private:
+
+};
 
 /*****************************
  *       Class Renamer       *
@@ -160,58 +251,23 @@ Renamer::~Renamer()
 //
 int Renamer::analyze()
 {
-    // set global variables
-    // TODO (nilbeleth#1#): lepsie riesenie ako zdielat tieto nazvy
-    oldSymbol = _origSymbol;
-    newSymbol = _newSymbol;
-
-    //
-    int argc = 3;
-    const char* argv[] = { "app", "test.cpp", "--"};
-    RenamingActionFactory factory;
-
-
-    // create new DB file
+    // ensure compilation DB is present
+    string buildPath = "./";            // TODO (nilbeleth#1#): porozmyslaj nad dakou dynamickou cestou k buildPath
+    if( File::exists(buildPath + COMPILE_DB_FILE) )
+        WARNING("Compilation DB already present... overwriting.")
     _resource->generateJSONDatabase();
 
-    string buildDir = ".";
-    string errMsg = "Databaza v riti.";
-    CompilationDatabase* compilations(CompilationDatabase::loadFromDirectory(buildDir, errMsg));
+    //
+    string errMsg;
+    llvm::OwningPtr<CompilationDatabase> compilations(CompilationDatabase::loadFromDirectory(buildPath, errMsg));
+    if( !compilations )
+        WARNING(errMsg);
 
-    // TODO (nilbeleth#1#): daky lepsi system ako spustit analyzu
-    // parse the command-line args passed to your code
-    //CommonOptionsParser op(argc, argv);
-    //string msg = "Blba databaza.";
-    //llvm::OwningPtr<CompilationDatabase> compilations(CompilationDatabase::loadFromDirectory(".", msg));
-
-
-    /*vector<CompileCommand> commands = op.getCompilations().getCompileCommands("test.cpp");
-
-    for(int i = 0; i < commands.size();++i)
-    {
-        cout << "Directory: " << commands.at(i).Directory << endl;
-
-        cout << "Command: ";
-        for(int j = 0; j < commands.at(i).CommandLine.size(); ++j)
-        {
-            cout << commands.at(i).CommandLine.at(j) << " ";
-        }
-        cout << endl;
-    }*/
-
-    // create a new Clang Tool instance (a LibTooling environment)
-    //ClangTool Tool(op.getCompilations(), op.getSourcePathList());
     RefactoringTool tool(*compilations, _resource->getSources());
-    //vector<string> files;
-    //files.push_back("test.cpp");
-    //ClangTool Tool(*compilations.get(), files);
 
-
-    // run the Clang Tool, creating a new FrontendAction (explained below)
-    int result = tool.run(newFrontendActionFactory(&factory));
-
-
-    return result;
+    //
+    RenamingActionFactory finder(this);
+    return tool.run(newFrontendActionFactory(&finder));
 }
 
 

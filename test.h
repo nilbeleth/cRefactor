@@ -6,49 +6,62 @@
 
 #define MAX(X,Y) ((X) < (Y) ? (X) : (Y))
 
-int global = 1;
+int global = 1; 				// ValueDecl::DeclaratorDecl::VarDecl
 
-enum Enum
+enum Enum					// TypeDecl::TagDecl::EnumDecl
 {
-    enum1,
-    enum2,
-    enum3,
-    enum4
+    enum1,					// ValueDecl::EnumConstantDecl
+    enum2					// ValueDecl::EnumConstantDecl
 };
 
 
-typedef std::vector<std::string> tStrings;
+typedef std::vector<std::string> tStrings;	// NamedDecl::TypeDecl::TypedefNameDecl::TypedefDecl
 
 
-class Class
+class ClassBase					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
 {
     public:
-    	Class() {}
-	virtual ~Class() {}
+    	ClassBase() {}				// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl::CXXConstructorDecl
+	virtual ~ClassBase() {}			// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl::CXXDestructorDecl
 
-	void method() {}
+	virtual void method() {}		// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl
+    protected:
+        char attr0;				// ValueDecl::DeclaratorDecl::FieldDecl
+    private:
+        std::string attr1;			// ValueDecl::DeclaratorDecl::FieldDecl
+	int attr2;				// ValueDecl::DeclaratorDecl::FieldDecl
+};
+
+class Class 					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
+	: public ClassBase			// 
+{
+    public:
+        Class() {}				// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl::CXXConstructorDecl
+	virtual ~Class() {}			// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl::CXXDestructorDecl
+
+	void method();				// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl
     protected:
     private:
-        std::string attr1;
-	int attr2;
+        std::string attr1;			// ValueDecl::DeclaratorDecl::FieldDecl
+	int attr2;				// ValueDecl::DeclaratorDecl::FieldDecl
 };
 
-struct Struct
+struct Struct					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
 {
-    int s1;
-    char s2;
+    int s1;					// ValueDecl::DeclaratorDecl::FieldDecl
+    char s2;					// ValueDecl::DeclaratorDecl::FieldDecl
 };
 
-union Union
+union Union					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
 {
-    char u1;
-    short int u2;
+    char u1;					// ValueDecl::DeclaratorDecl::FieldDecl
+    short int u2;				// ValueDecl::DeclaratorDecl::FieldDecl
 };
 
 
-namespace lala
+namespace lala					// NamespaceDecl
 {
-int global = 10;
+int global = 10;				// ValueDecl::DeclaratorDecl::VarDecl
 };
 
 #endif

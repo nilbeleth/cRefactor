@@ -30,6 +30,7 @@ LIBS = \
 				-lclangEdit\
 				-lclangAST\
 				-lclangLex\
+				-lclangASTMatchers\
 				-lclangBasic\
 				$(shell $(LLVMCONFIG) --libs)\
 				-lcurses

@@ -12,10 +12,7 @@ namespace refactor
 /**
  * Add escape sequances where it's needed.
  */
-std::string escapeString(const std::string& str)
-{
-    return str;
-}
+std::string escapeString(const std::string& str);
 
 
 /**

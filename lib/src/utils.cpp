@@ -9,6 +9,11 @@ using namespace refactor;
 
 
 
+std::string refactor::escapeString(const std::string& str)
+{
+    return str;
+}
+
 Utils::Utils()
 {
     //ctor
@@ -37,7 +42,7 @@ string Utils::printDecl(const NamedDecl* decl, const ASTContext* astContext)
     ss << "\tAttr:          " << (decl->hasAttrs() ? "yes" : "no") << endl;
     ss << "\tFrom file:     " << (decl->isFromASTFile() ? "yes" : "no") << endl;
     ss << "\tSystem header: " << (astContext->getSourceManager().isInSystemHeader(b) ? "yes" : "no") << endl;
-    ss << "\tType:          " << identifyDecl(decl) << endl;
+    //ss << "\tType:          " << identifyDecl(decl) << endl;
 
     return ss.str();
 }
@@ -47,7 +52,7 @@ string Utils::identifyDecl(const Decl* decl)
 {
     stringstream ss;
 
-
+/*
     if( isa<AccessSpecDecl>(decl) )
         ss << "AccessSpecDecl" << endl;
     else if( isa<BlockDecl>(decl) )
@@ -249,6 +254,6 @@ string Utils::identifyDecl(const Decl* decl)
     }
     else
         ss << "<Unknown declaration>" << endl;
-
+*/
     return ss.str();
 }
