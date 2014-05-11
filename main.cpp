@@ -23,13 +23,16 @@ int main(int argc, char* argv[])
 
 
     // 2. step: creating a new renaming task
-    string old = "method", novy = "Foo";
+    string old = "ClassBase", novy = "Foo";
     Renamer* renamer = new Renamer(&testing, old, novy);
 
-    // 3. step: some feedback about changes
-    // 4. step: commit changes
+    // 3. step: run analysis
+    int res = renamer->analyze();
 
-    // 5. step: clean up
+    // 4. step: some feedback about changes
+    // 5. step: commit changes
+
+    // 6. step: clean up
     delete renamer;
 
 

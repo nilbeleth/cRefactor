@@ -70,6 +70,7 @@ int Reformatter::analyze()
     return result;
 }
 
+/*
 refactor::Replacements Reformatter::getChanges() const
 {
     ERROR("Not yet implemented.")
@@ -86,3 +87,4 @@ int Reformatter::commit()
     ERROR("Not yet implemented.")
     return 0;
 }
+*/

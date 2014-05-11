@@ -10,7 +10,7 @@ SRC = ./src
 BUILD = ./obj
 SOURCES = location.cpp resource.cpp replacement.cpp \
 	  task.cpp renamer.cpp reformatter.cpp extractor.cpp \
-	  logger.cpp utils.cpp
+	  logger.cpp utils.cpp renamingstrategy.cpp renamerbyname.cpp
 
 CXX = g++
 LLVMCOMPONENTS := cppbackend

@@ -14,14 +14,30 @@ using namespace refactor;
 /*****************************
  *       Class Location      *
  *****************************/
-Location::Location(File* file, const int position)
-    : m_file(file), m_position(position), m_valid(false)
+Location::Location(const std::string filePath, const int position)
+    : m_filePath(filePath), m_position(position), m_valid(false)
 {
     //if( file )
         m_valid = true;
 }
 
-Location::Location(File* file, const int line, const int column)
+Location::Location(const std::string filePath, const int line, const int column)
+{
+
+}
+
+bool Location::operator==(const Location& rhs)
+{
+    if( m_valid && rhs.isValid() )
+    {
+        if( m_position == rhs.m_position )
+            return true;
+    }
+
+    return false;
+}
+
+bool Location::operator!=(const Location& rhs)
 {
 
 }

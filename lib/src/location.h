@@ -20,60 +20,56 @@ class Location
     public:
         /** Create an invalid location. */
         Location()
-            : m_file(NULL), m_valid(false), m_position(1)
+            : m_filePath(""), m_valid(false), m_position(1)
         { }
 
         /**
          * Create a new location.
-         * @param file      Reference to file in which the position is located.
+         * @param filePath  Reference to file in which the position is located.
          * @param position  A position inside a file.
          */
-        Location(File* file, const int position);
+        Location(const std::string filePath, const int position);
 
         /**
          * Create a new location.
-         * @param file      Reference to file in which the position is located.
+         * @param filePath  Reference to file in which the position is located.
          * @param line      Number of line (starting with 1).
          * @param column    Number of character in line.
          */
-        Location(File* file, const int line, const int column);
+        Location(const std::string filePath, const int line, const int column);
 
         /** Default destructor */
         virtual ~Location() {}
 
 
-        bool operator==(const Location& rhs)
-        {
-            if( m_valid && rhs.isValid() )
-            {
-                if( m_position == rhs.m_position )
-                    return true;
-            }
-
-            return false;
-        }
-
+        /// @brief Compare operators.
+        /// @{
+        bool operator==(const Location& rhs);
         bool operator!=(const Location& rhs);
+        /// @}
 
 
-        /** */
+        /// @brief Accessors.
+        /// @{
         int getLine() const;
 
-        /** */
         int getColumn() const;
+        /// @}
 
 
         /** @brief Returns true if these location is valid. */
         bool isValid() const { return m_valid; }
 
-        /** @brief Pretty print. */
+        /// @brief Returns a human readable string representation.
         std::string asString() const;
 
     protected:
     private:
         bool m_valid;
-        File* m_file;
+        std::string m_filePath;
         int m_position;
+
+        // TODO: vymysliet ci to chcem ako position alebo ako col+line a spravit prechodnu funkciu
 };
 
 

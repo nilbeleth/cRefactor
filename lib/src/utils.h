@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 #include <string>
-#include <clang/AST/Decl.h>
+#include <clang/AST/AST.h>
 #include <clang/AST/ASTContext.h>
 
 
@@ -29,6 +29,7 @@ class Utils
 
         static std::string printDecl(const clang::NamedDecl* decl, const clang::ASTContext* astContext);
         static std::string identifyDecl(const clang::Decl* decl);
+        static std::string identifyStmt(const clang::Stmt* stmt);
     protected:
     private:
 };

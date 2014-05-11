@@ -75,7 +75,7 @@ class Task
          * Get all possible replacements determined
          * by analysis.
          */
-        virtual Replacements getChanges() const =0;
+        Replacements getChanges() const { return m_replacements; }
 
         /**
          * Apply a replacement if it's possible.
@@ -83,7 +83,7 @@ class Task
          * @return          Return 0 if the replacement
          *                  is successfully apllied, 1 otherwise.
          */
-        virtual int applyChange(const Replacement& replace) const =0;
+        int applyChange(const Replacement& replace) const;
 
         /**
          * Apply all possible replacements.
@@ -94,12 +94,14 @@ class Task
          *              <li> 1 = Failure
          *          </ul>
          */
-        virtual int commit() =0;
+        int commit() const;
 
 
     protected:
         /** Hide default constructor */
         Task() {}
+
+        Replacements m_replacements;
     private:
 };
 

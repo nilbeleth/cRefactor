@@ -11,7 +11,7 @@
 namespace refactor
 {
 
-class Renamer;
+class RenamerByName;
 
 
 /**
@@ -44,7 +44,7 @@ enum FileStatus
  */
 class Resource
 {
-    friend class Renamer;
+    friend class RenamerByName;
 
     public:
         /** Default constructor */
@@ -106,7 +106,7 @@ class Resource
  */
 class File : public Resource
 {
-    friend class Renamer;
+    friend class RenamerByName;
     friend class Project;
     friend class Location;
 
@@ -210,7 +210,7 @@ class File : public Resource
  */
 class Project : public Resource
 {
-    friend class Renamer;
+    friend class RenamerByName;
 
     public:
         Project();

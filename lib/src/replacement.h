@@ -41,7 +41,7 @@ class Replacement
         bool operator!=(const Replacement& rhs);
 
 
-        /** @brief Pretty print. */
+        /** @brief Returns a human readable string representation. */
         std::string asString() const;
 
 

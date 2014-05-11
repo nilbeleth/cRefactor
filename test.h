@@ -8,11 +8,15 @@
 
 int global = 1; 				// ValueDecl::DeclaratorDecl::VarDecl
 
+
 enum Enum					// TypeDecl::TagDecl::EnumDecl
 {
     enum1,					// ValueDecl::EnumConstantDecl
     enum2					// ValueDecl::EnumConstantDecl
 };
+
+
+int do_something(const Enum type);
 
 
 typedef std::vector<std::string> tStrings;	// NamedDecl::TypeDecl::TypedefNameDecl::TypedefDecl
@@ -25,6 +29,9 @@ class ClassBase					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
 	virtual ~ClassBase() {}			// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl::CXXDestructorDecl
 
 	virtual void method() {}		// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl
+	bool method2();
+
+	static const int pi = 3;
     protected:
         char attr0;				// ValueDecl::DeclaratorDecl::FieldDecl
     private:
@@ -32,8 +39,7 @@ class ClassBase					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
 	int attr2;				// ValueDecl::DeclaratorDecl::FieldDecl
 };
 
-class Class 					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
-	: public ClassBase			// 
+class Class : public ClassBase			// 
 {
     public:
         Class() {}				// ValueDecl::DeclaratorDecl::FunctionDecl::CXXMethodDecl::CXXConstructorDecl
@@ -61,7 +67,12 @@ union Union					// TypeDecl::TagDecl::RecordDecl::CXXRecordDecl
 
 namespace lala					// NamespaceDecl
 {
-int global = 10;				// ValueDecl::DeclaratorDecl::VarDecl
-};
+    int global = 10;				// ValueDecl::DeclaratorDecl::VarDecl
+
+    namespace alal
+    {
+        char character = 'c';
+    }
+}
 
 #endif

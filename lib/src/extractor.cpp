@@ -26,6 +26,7 @@ int Extractor::analyze()
     return 0;
 }
 
+/*
 refactor::Replacements Extractor::getChanges() const
 {
     ERROR("Not yet implemented.")
@@ -36,4 +37,4 @@ int Extractor::commit()
     ERROR("Not yet implemented.")
     return 0;
 }
-
+*/

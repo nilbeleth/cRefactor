@@ -50,7 +50,7 @@ class Extractor : public Task
          * Get all possible replacements determined
          * by analysis.
          */
-        virtual Replacements getChanges() const;
+        //virtual Replacements getChanges() const;
 
         /**
          * Apply a replacement if it's possible.
@@ -58,14 +58,14 @@ class Extractor : public Task
          * @return          Return 0 if the replacement
          *                  is successfully apllied, 1 otherwise.
          */
-        virtual int applyChange(const Replacement& replace) const;
+        //virtual int applyChange(const Replacement& replace) const;
 
         /**
          * Apply all possible replacements.
          * @return          Return 0 if the replacement
          *                  is successfully apllied, 1 otherwise.
          */
-        virtual int commit();
+        //virtual int commit();
 
 
     protected:
