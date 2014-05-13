@@ -2,6 +2,7 @@
 #define REPLACEMENT_H
 #include <string>
 #include <vector>
+#include <set>
 #include "location.h"
 
 
@@ -19,13 +20,24 @@ namespace refactor
  */
 class Replacement
 {
-    friend class Renamer;
-    friend class Reformatter;
-    friend class Extractor;
+    //friend class Renamer;
+    //friend class Reformatter;
+    //friend class Extractor;
+    friend class RenamerByName;
 
     public:
         /** Construct an invalid replacement. */
         Replacement();
+
+        /**
+         * Create a new valid replacement.
+         * @note These replacements could be created only
+         *       by library itself therefore it's hidden.
+         * @param loc
+         * @param offset
+         * @param toReplace
+         */
+        Replacement(const Location& loc, const int offset, const std::string& toReplace );
 
         /** Default destructor */
         virtual ~Replacement();
@@ -46,17 +58,6 @@ class Replacement
 
 
     protected:
-        /**
-         * Create a new valid replacement.
-         * @note These replacements could be created only
-         *       by library itself therefore it's hidden.
-         * @param loc
-         * @param offset
-         * @param toReplace
-         */
-        Replacement(const Location& loc, const int offset, const std::string& toReplace );
-
-
     private:
         Location m_location;
         int m_offset;

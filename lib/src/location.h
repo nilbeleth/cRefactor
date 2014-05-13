@@ -1,6 +1,8 @@
 #ifndef LOCATION_H
 #define LOCATION_H
 #include <string>
+#include <clang/Basic/SourceLocation.h>
+#include <clang/Basic/SourceManager.h>
 
 
 
@@ -17,10 +19,13 @@ class File;
  */
 class Location
 {
+    //friend class RenamerByName;
+    friend class RenamingMutator;
+
     public:
         /** Create an invalid location. */
         Location()
-            : m_filePath(""), m_valid(false), m_position(1)
+            : m_filePath(""), m_line(1), m_column(1)
         { }
 
         /**
@@ -28,7 +33,7 @@ class Location
          * @param filePath  Reference to file in which the position is located.
          * @param position  A position inside a file.
          */
-        Location(const std::string filePath, const int position);
+        Location(const std::string filePath, const unsigned position);
 
         /**
          * Create a new location.
@@ -36,10 +41,16 @@ class Location
          * @param line      Number of line (starting with 1).
          * @param column    Number of character in line.
          */
-        Location(const std::string filePath, const int line, const int column);
+        Location(const std::string filePath, const unsigned line, const unsigned column);
 
         /** Default destructor */
         virtual ~Location() {}
+
+
+        ///
+        Location getLocWithOffset(const int offset) const;
+
+        static Location getAsThisLocation(const clang::SourceManager& SM, const clang::SourceLocation loc);
 
 
         /// @brief Compare operators.
@@ -51,23 +62,25 @@ class Location
 
         /// @brief Accessors.
         /// @{
-        int getLine() const;
+        unsigned getLine() const;
 
-        int getColumn() const;
+        unsigned getColumn() const;
         /// @}
 
 
         /** @brief Returns true if these location is valid. */
-        bool isValid() const { return m_valid; }
+        bool isValid() const { return m_filePath == "" ? false : true; }
 
         /// @brief Returns a human readable string representation.
         std::string asString() const;
 
     protected:
     private:
-        bool m_valid;
         std::string m_filePath;
-        int m_position;
+        unsigned m_line;
+        unsigned m_column;
+
+        clang::SourceLocation getAsSourceLocation(const clang::SourceManager SM) const;
 
         // TODO: vymysliet ci to chcem ako position alebo ako col+line a spravit prechodnu funkciu
 };

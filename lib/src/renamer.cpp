@@ -56,7 +56,10 @@ Renamer::~Renamer()
 int Renamer::analyze()
 {
     INFO("Running analysis for renaming identifiers...")
-    return m_impl->analyze();
+    int result = m_impl->analyze();
+    m_replacements = m_impl->getChanges();
+
+    return result;
 }
 
 

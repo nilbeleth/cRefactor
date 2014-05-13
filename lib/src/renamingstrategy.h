@@ -21,7 +21,7 @@ namespace refactor
  */
 class RenamingStrategy
 {
-    friend class RenamerByName;
+    friend class RenamingMutator;
 
     public:
         /** Unify initialization from derived classes */
@@ -33,12 +33,14 @@ class RenamingStrategy
         /** */
         virtual int analyze() = 0;
 
+
+        // TODO: skryt dade
         IdentType identify(const clang::Decl* decl) const;
         IdentType identify(const std::string& type) const;
         //IdentType identify(const clang::Stmt* stmt) const;
 
 
-        Replacements getChanges() const { return m_replacements; }
+        Replacements& getChanges() { return m_replacements; }
 
         void setResource(Resource* resource) { m_resource = resource; }
         const Resource* getResource() const { return m_resource; }
@@ -71,6 +73,8 @@ class RenamingStrategy
  */
 class RenamerByName : public RenamingStrategy
 {
+    friend class RenamingMutator;
+
     public:
         RenamerByName(Resource* resource, const std::string& origSymbol, const std::string& newSymbol);
 

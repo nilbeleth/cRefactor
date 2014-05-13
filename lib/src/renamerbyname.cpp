@@ -31,8 +31,8 @@ using namespace refactor;
 class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingMutator>
 {
     public:
-        explicit RenamingMutator(const RenamerByName* renamer)
-            : _astContext(NULL), _renamer(renamer)
+        explicit RenamingMutator(RenamerByName* renamer)
+            : _astContext(NULL), _SM(NULL), _renamer(renamer)
         { }
 
         // set new context and traverse AST
@@ -61,7 +61,8 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
     protected:
     private:
         ASTContext* _astContext;
-        const RenamerByName* _renamer;
+        SourceManager* _SM;
+        RenamerByName* _renamer;
 
         // true if loc is in project files (has valid location
         // and is not in system libraries)
@@ -93,10 +94,10 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
         return true;
 
 
-    cout << name << ": (from NamedDecl)\n";
-    cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-    cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-    cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
+    //cout << name << ": (from NamedDecl)\n";
+    //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
+    //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
+    //cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
 
 
     // destructor has a ~ before, so we need to know if it's a destructor or not
@@ -104,6 +105,9 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
     {
         if( _renamer->getOldSymbol().compare(name.substr(1)) != 0 )
             return true;
+
+        // aplikuj offset
+        ++offset;
     }
     // it's not a destructor, check for name
     else if( _renamer->getOldSymbol() != name )
@@ -111,7 +115,16 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
         return true;
     }
 
+    // is this type we are looking for?
+    if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
+        return true;
+
+    Location location = Location::getAsThisLocation(_astContext->getSourceManager(),loc.getLocWithOffset(offset));
+    refactor::Replacements& replacements = _renamer->getChanges();
+    replacements.push_back(refactor::Replacement(location, name.size()-offset, _renamer->getNewSymbol()));
+
     cout << "Declaration of (" << _renamer->getOldSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+
     return true;
 }
 
@@ -127,16 +140,24 @@ bool RenamingMutator::VisitVarDecl(VarDecl* decl)
 
     string name = typeQT.getAsString();
 
-    cout << name << ": (from VarDecl)\n";
-    cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
+    //cout << name << ": (from VarDecl)\n";
+    //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
     //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-    cout << "\t\t\t"; _renamer->identify(name); cout << endl << endl;
-    if( type && !type->isBuiltinType() )
-        cout << "Of type: " << type->getTypeClassName() << endl;
+    //cout << "\t\t\t"; _renamer->identify(name); cout << endl << endl;
+    //if( type && !type->isBuiltinType() )
+        ;//cout << "Of type: " << type->getTypeClassName() << endl;
+
+    // is this type we are looking for?
+    if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
+        return true;
 
     // Type
     if( checkTypeIdent(name, _renamer->getOldSymbol()) )
     {
+        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc);
+        refactor::Replacements& replacements = _renamer->getChanges();
+        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+
         cout << "Type usage of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
 
@@ -148,6 +169,8 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
     // is this somewhere declared?
     NamedDecl* decl = expr->getFoundDecl();
     string oldSymbol = _renamer->getOldSymbol();
+    int offset = 0;
+
     if( decl )
     {
         string name = expr->getNameInfo().getAsString();
@@ -160,8 +183,7 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
         if( expr->hasQualifier() )
         {
             NestedNameSpecifier* qualifier = expr->getQualifier();
-            SourceLocation nLoc1 = expr->getQualifierLoc().getBeginLoc();
-            SourceLocation nLoc2 = expr->getQualifierLoc().getLocalBeginLoc();
+            SourceLocation nLoc = expr->getQualifierLoc().getLocalBeginLoc();
 
             switch( qualifier->getKind() )
             {
@@ -170,15 +192,19 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
                     // este by sa mal cyklicli dako ziskavat prefix pokial ide o namespacy vnorene do seba
                     NamespaceDecl* namespaceDecl = qualifier->getAsNamespace();
 
-                    cout << namespaceDecl->getNameAsString() << ": (from DeclRefExpr - namespace)\n";
-                    cout << "\tAt:\t\t" << nLoc1.printToString(_astContext->getSourceManager()) << endl;
-                    cout << "\tAt:\t\t" << nLoc2.printToString(_astContext->getSourceManager()) << endl;
-                    cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-                    cout << "\t\t\tNamespace" << endl << endl;
+                    //cout << namespaceDecl->getNameAsString() << ": (from DeclRefExpr - namespace)\n";
+                    //cout << "\tAt:\t\t" << nLoc1.printToString(_astContext->getSourceManager()) << endl;
+                    //cout << "\tAt:\t\t" << nLoc2.printToString(_astContext->getSourceManager()) << endl;
+                    //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
+                    //cout << "\t\t\tNamespace" << endl << endl;
 
                     if( namespaceDecl->getNameAsString() == _renamer->getOldSymbol() )
                     {
-                        cout << "Qualifier of (" << namespaceDecl->getNameAsString() << ") at " << nLoc2.printToString(_astContext->getSourceManager()) << endl;
+                        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), nLoc);
+                        refactor::Replacements& replacements = _renamer->getChanges();
+                        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+
+                        cout << "Qualifier of (" << namespaceDecl->getNameAsString() << ") at " << nLoc.printToString(_astContext->getSourceManager()) << endl;
                     }
                     break;
                 }
@@ -199,23 +225,29 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
             }
 
             if( qualifier->getAsType() && !qualifier->getAsType()->isBuiltinType() )
-                cout << "Of type: " << qualifier->getAsType()->getTypeClassName() << endl;
+                ;//cout << "Of type: " << qualifier->getAsType()->getTypeClassName() << endl;
         }
 
-        cout << name << ": (from DeclRefExpr)\n";
-        cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-        cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-        cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
+        //cout << name << ": (from DeclRefExpr)\n";
+        //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
+        //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
+        //cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
 
         // does the name match?
         if( CXXDestructorDecl::classof(decl) )
         {
             if( string("~" + oldSymbol) != name )
                 return true;
+
+            offset = 1;
         }
         else
             if( oldSymbol != name )
                 return true;
+
+        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
+        refactor::Replacements& replacements = _renamer->getChanges();
+        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
         cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
@@ -228,6 +260,8 @@ bool RenamingMutator::VisitMemberExpr(MemberExpr* expr)
     // is this somewhere declared?
     NamedDecl* decl = expr->getFoundDecl();
     string oldSymbol = _renamer->getOldSymbol();
+    int offset = 0;
+
     if( decl )
     {
         SourceLocation loc = expr->getExprLoc();
@@ -236,19 +270,25 @@ bool RenamingMutator::VisitMemberExpr(MemberExpr* expr)
         if(!inValidLoc(loc))
             return true;
 
-        cout << name << ": (from MemberExpr)\n";
-        cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-        cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-        cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
+        //cout << name << ": (from MemberExpr)\n";
+        //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
+        //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
+        //cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
 
         if( isa<CXXDestructorDecl>(decl) )
         {
             if( oldSymbol != name.substr(1) )
                 return true;
+
+            offset = 1;
         }
         else
             if( oldSymbol != name )
                 return true;
+
+        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
+        refactor::Replacements& replacements = _renamer->getChanges();
+        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
         cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
@@ -294,10 +334,10 @@ bool RenamingMutator::checkTypeIdent(const string decl, const string name)
 // do nothing more than return a correct Visitor
 class RenamingActionFactory
 {
-    const RenamerByName* _renamer;
+    RenamerByName* _renamer;
 
     public:
-        RenamingActionFactory(const RenamerByName* renamer)
+        RenamingActionFactory(RenamerByName* renamer)
             : _renamer(renamer)
         { }
 

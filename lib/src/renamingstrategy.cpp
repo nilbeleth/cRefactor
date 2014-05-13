@@ -15,9 +15,8 @@ RenamingStrategy::RenamingStrategy(Resource* resource,
                                    const std::string newSymbol,
                                    const IdentType type,
                                    const std::string derivedFrom)
-    : m_resource(resource), m_new(newSymbol), m_type(type), m_inFamilyWith(derivedFrom)
+    : m_resource(resource), m_new(newSymbol), m_type(type), m_inFamilyWith(derivedFrom), m_replacements(vector<Replacement>())
 {
-
 }
 
 
