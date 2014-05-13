@@ -94,12 +94,6 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
         return true;
 
 
-    //cout << name << ": (from NamedDecl)\n";
-    //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-    //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-    //cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
-
-
     // destructor has a ~ before, so we need to know if it's a destructor or not
     if( isa<CXXDestructorDecl>(decl) )
     {
@@ -139,13 +133,6 @@ bool RenamingMutator::VisitVarDecl(VarDecl* decl)
         return true;
 
     string name = typeQT.getAsString();
-
-    //cout << name << ": (from VarDecl)\n";
-    //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-    //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-    //cout << "\t\t\t"; _renamer->identify(name); cout << endl << endl;
-    //if( type && !type->isBuiltinType() )
-        ;//cout << "Of type: " << type->getTypeClassName() << endl;
 
     // is this type we are looking for?
     if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
@@ -192,11 +179,8 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
                     // este by sa mal cyklicli dako ziskavat prefix pokial ide o namespacy vnorene do seba
                     NamespaceDecl* namespaceDecl = qualifier->getAsNamespace();
 
-                    //cout << namespaceDecl->getNameAsString() << ": (from DeclRefExpr - namespace)\n";
-                    //cout << "\tAt:\t\t" << nLoc1.printToString(_astContext->getSourceManager()) << endl;
-                    //cout << "\tAt:\t\t" << nLoc2.printToString(_astContext->getSourceManager()) << endl;
-                    //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-                    //cout << "\t\t\tNamespace" << endl << endl;
+                    if( !(_renamer->getRestrictType() & I_Namespace) )
+                        break;
 
                     if( namespaceDecl->getNameAsString() == _renamer->getOldSymbol() )
                     {
@@ -228,11 +212,6 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
                 ;//cout << "Of type: " << qualifier->getAsType()->getTypeClassName() << endl;
         }
 
-        //cout << name << ": (from DeclRefExpr)\n";
-        //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-        //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-        //cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
-
         // does the name match?
         if( CXXDestructorDecl::classof(decl) )
         {
@@ -244,6 +223,10 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
         else
             if( oldSymbol != name )
                 return true;
+
+        // is this type we are looking for?
+        if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
+            return true;
 
         Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
         refactor::Replacements& replacements = _renamer->getChanges();
@@ -270,10 +253,6 @@ bool RenamingMutator::VisitMemberExpr(MemberExpr* expr)
         if(!inValidLoc(loc))
             return true;
 
-        //cout << name << ": (from MemberExpr)\n";
-        //cout << "\tAt:\t\t" << loc.printToString(_astContext->getSourceManager()) << endl;
-        //cout << "\tIs:\t\t" << Utils::identifyDecl(decl);
-        //cout << "\t\t\t"; _renamer->identify(decl); cout << endl << endl;
 
         if( isa<CXXDestructorDecl>(decl) )
         {
@@ -285,6 +264,10 @@ bool RenamingMutator::VisitMemberExpr(MemberExpr* expr)
         else
             if( oldSymbol != name )
                 return true;
+
+        // is this type we are looking for?
+        if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
+            return true;
 
         Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
         refactor::Replacements& replacements = _renamer->getChanges();
