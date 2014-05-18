@@ -2,6 +2,10 @@
 #define TASK_H
 #include <string>
 
+#include <clang/Rewrite/Core/Rewriter.h>
+#include <clang/Basic/SourceManager.h>
+#include <clang/Basic/FileManager.h>
+
 #include "resource.h"
 #include "replacement.h"
 
@@ -83,7 +87,7 @@ class Task
          * @return          Return 0 if the replacement
          *                  is successfully apllied, 1 otherwise.
          */
-        int applyChange(const Replacement& replace) const;
+        int applyChange(const Replacement& replace);
 
         /**
          * Apply all possible replacements.
@@ -94,15 +98,20 @@ class Task
          *              <li> 1 = Failure
          *          </ul>
          */
-        int commit() const;
+        int commit();
 
 
     protected:
         /** Hide default constructor */
-        Task() {}
+        Task();
 
         Replacements m_replacements;
+        clang::Rewriter* m_rewriter;
+        clang::SourceManager* m_SM;
+        clang::FileManager* m_FM;
+
     private:
+        bool initializeRewriter();
 };
 
 }   // end namespace refactor

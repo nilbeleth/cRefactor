@@ -29,6 +29,7 @@ using namespace refactor;
  *       Class Renamer       *
  *****************************/
 Renamer::Renamer(Resource* resource, const string& origSymbol, const string& newSymbol)
+    : Task()
 {
     m_impl = new RenamerByName(resource, origSymbol, newSymbol);
 }
@@ -49,6 +50,8 @@ Renamer::~Renamer()
 {
     delete m_impl;
     m_impl = NULL;
+    //delete m_rewriter;
+    //m_rewriter = NULL;
 }
 
 
@@ -56,6 +59,7 @@ Renamer::~Renamer()
 int Renamer::analyze()
 {
     INFO("Running analysis for renaming identifiers...")
+    m_replacements.clear();
     int result = m_impl->analyze();
     m_replacements = m_impl->getChanges();
 

@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 
 
     // 5. step: commit changes
+    renamer->commit();
 
 
     // 6. step: clean up

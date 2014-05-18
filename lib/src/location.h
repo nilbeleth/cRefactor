@@ -19,7 +19,7 @@ class File;
  */
 class Location
 {
-    //friend class RenamerByName;
+    friend class Task;
     friend class RenamingMutator;
 
     public:
@@ -43,6 +43,11 @@ class Location
          */
         Location(const std::string filePath, const unsigned line, const unsigned column);
 
+        /**
+         *
+         */
+        Location(const clang::SourceLocation loc, const clang::SourceManager& SM);
+
         /** Default destructor */
         virtual ~Location() {}
 
@@ -50,6 +55,7 @@ class Location
         ///
         Location getLocWithOffset(const int offset) const;
 
+        /// @deprecated Use @ref Location(const clang::SourceLocation loc, const clang::SourceManager& SM) instead.
         static Location getAsThisLocation(const clang::SourceManager& SM, const clang::SourceLocation loc);
 
 
@@ -62,6 +68,8 @@ class Location
 
         /// @brief Accessors.
         /// @{
+        std::string getFilePath() const { return m_filePath; }
+
         unsigned getLine() const;
 
         unsigned getColumn() const;
@@ -80,7 +88,7 @@ class Location
         unsigned m_line;
         unsigned m_column;
 
-        clang::SourceLocation getAsSourceLocation(const clang::SourceManager SM) const;
+        clang::SourceLocation getAsSourceLocation(clang::SourceManager& SM) const;
 
         // TODO: vymysliet ci to chcem ako position alebo ako col+line a spravit prechodnu funkciu
 };

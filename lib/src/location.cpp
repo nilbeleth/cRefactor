@@ -28,6 +28,13 @@ Location::Location(const std::string filePath, const unsigned line, const unsign
     // TODO (nilbeleth#1#): kontrola ci neprechadza za koniec a column posunut dalej
 }
 
+Location::Location(const SourceLocation loc, const SourceManager& SM)
+{
+    m_line = SM.getExpansionLineNumber(loc);
+    m_column = SM.getExpansionColumnNumber(loc);
+    m_filePath = SM.getFilename(loc);
+}
+
 Location Location::getLocWithOffset(const int offset) const
 {
     return Location(m_filePath, m_line, m_column + offset);
@@ -78,20 +85,33 @@ unsigned Location::getColumn() const
 std::string Location::asString() const
 {
     stringstream ss;
-    ss << m_filePath << ":" << m_line << ":" << m_column;
+    if( isValid() )
+        ss << m_filePath << ":" << m_line << ":" << m_column;
+    else
+        ss << "<invalid loc>";
     return ss.str();
 }
 
-SourceLocation Location::getAsSourceLocation(const SourceManager SM) const
+SourceLocation Location::getAsSourceLocation(SourceManager& SM) const
 {
-    const FileEntry* entry = SM.getFileManager().getFile(m_filePath);
+    const FileEntry* entry = SM.getFileManager().getFile(m_filePath, true);
     if( entry != NULL )
     {
         FileID ID;
-        SourceLocation location = SM.translateFileLineCol(entry, m_line, m_column);
+
+        SourceLocation location = SM.translateFileLineCol(entry, 1, 1);
 
         if( location.isValid() )
-            return location;
+            ID = SM.getFileID(location);
+        else
+            ID = SM.createFileID(entry, SourceLocation(), SrcMgr::C_User);
+
+        SourceLocation start = SM.translateLineCol(ID, m_line, m_column);
+
+        //const SourceLocation start = SM.getLocForStartOfFile(ID);
+        DEBUG("Location translated as: " << start.printToString(SM));
+        //if( location.isValid() )
+            return start;
     }
 
     return SourceLocation();

@@ -53,6 +53,11 @@ class Replacement
         bool operator!=(const Replacement& rhs);
 
 
+        Location getLocation() const { return m_location; }
+        int getOffset() const { return m_offset; }
+        std::string getReplaceText() const { return m_replaceText; }
+
+
         /** @brief Returns a human readable string representation. */
         std::string asString() const;
 

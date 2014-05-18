@@ -21,6 +21,7 @@ namespace refactor
  */
 class RenamingStrategy
 {
+    friend class Renamer;
     friend class RenamingMutator;
 
     public:
@@ -34,10 +35,12 @@ class RenamingStrategy
         virtual int analyze() = 0;
 
 
-        // TODO: skryt dade
+        /// @todo Hide this somehow.
+        /// @{
         IdentType identify(const clang::Decl* decl) const;
         IdentType identify(const std::string& type) const;
         //IdentType identify(const clang::Stmt* stmt) const;
+        /// @}
 
 
         Replacements& getChanges() { return m_replacements; }
@@ -62,6 +65,8 @@ class RenamingStrategy
 
         Replacements m_replacements;
 
+        //clang::Rewriter* m_rewriter;
+
     private:
 };
 
@@ -73,12 +78,13 @@ class RenamingStrategy
  */
 class RenamerByName : public RenamingStrategy
 {
+    friend class Renamer;
     friend class RenamingMutator;
 
     public:
         RenamerByName(Resource* resource, const std::string& origSymbol, const std::string& newSymbol);
 
-        ~RenamerByName() {}
+        ~RenamerByName();
 
         int analyze();
 

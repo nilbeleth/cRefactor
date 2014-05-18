@@ -11,7 +11,6 @@
 #include <clang/Frontend/FrontendActions.h>
 #include <clang/Tooling/Refactoring.h>
 #include <clang/Tooling/Tooling.h>
-#include <clang/Rewrite/Core/Rewriter.h>
 
 #include <iostream>
 #include <sstream>
@@ -32,7 +31,7 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
 {
     public:
         explicit RenamingMutator(RenamerByName* renamer)
-            : _astContext(NULL), _SM(NULL), _renamer(renamer)
+            : _astContext(NULL), _renamer(renamer)
         { }
 
         // set new context and traverse AST
@@ -47,21 +46,13 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
         //
         virtual bool VisitDeclRefExpr(DeclRefExpr* expr);
 
+        //
         virtual bool VisitMemberExpr(MemberExpr* expr);
-
-        virtual bool VisitCXXRecordDecl(CXXRecordDecl* decl)
-        {
-            if( "Class" == decl->getNameAsString() )
-            {
-
-            }
-            return true;
-        }
 
     protected:
     private:
         ASTContext* _astContext;
-        SourceManager* _SM;
+        //SourceManager* _SM;
         RenamerByName* _renamer;
 
         // true if loc is in project files (has valid location
@@ -338,6 +329,11 @@ class RenamingActionFactory
 RenamerByName::RenamerByName(Resource* resource, const string& origSymbol, const string& newSymbol)
     : RenamingStrategy(resource, newSymbol, I_All, ""), m_old(origSymbol)
 {
+}
+
+RenamerByName::~RenamerByName()
+{
+
 }
 
 int RenamerByName::analyze()
