@@ -100,9 +100,7 @@ bool Task::initializeRewriter()
 
     FileSystemOptions fileSystemOptions;
     m_FM = new FileManager(fileSystemOptions);
-    //SourceManager sourceManager(*diagsEngine, *m_FM);
 
-    //SourceManager SM(*diagsEngine, fileManager);
     m_SM = new SourceManager(*diagsEngine, *m_FM);
 
     LangOptions langOpts;

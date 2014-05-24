@@ -19,6 +19,7 @@ class RenamerByName;
  */
 enum eFileType
 {
+    T_Unknown,      /**< */
     T_Source,       /**< A source file. */
     T_Header,       /**< Header file. */
     T_Plain         /**< Plantext file. */
@@ -164,6 +165,17 @@ class File : public Resource
          * @return          Return true if file exists and it could be open for reading.
          */
         static inline bool exists(const std::string& filename);
+
+
+        /**
+         *
+         */
+        static bool isHeaderFile(const std::string& filename);
+
+        /**
+         *
+         */
+        static bool isSourceFile(const std::string& filename);
 
 
     protected:
