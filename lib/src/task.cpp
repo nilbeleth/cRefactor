@@ -55,7 +55,8 @@ int Task::applyChange(const Replacement& replace)
 
     SourceLocation loc = replace.getLocation().getAsSourceLocation(*m_SM);
     m_rewriter->ReplaceText(loc, replace.getOffset(), replace.getReplaceText());
-    DEBUG("Replacement --> " << loc.printToString(*m_SM) << ": " << replace.getOffset() << " for " << replace.getReplaceText())
+
+    m_rewriter->overwriteChangedFiles();
     return 0;
 }
 
@@ -74,19 +75,21 @@ int Task::commit()
         result |= applyChange(*it);
     }
 
+    //m_rewriter->overwriteChangedFiles();
+
+/*
     const FileEntry* entry = m_rewriter->getSourceMgr().getFileManager().getFile("test.cpp");
     if( entry == NULL )
     {
-        ERROR("A je to v pici")
+        ERROR("File not found.")
         return 1;
     }
     const FileID id = m_rewriter->getSourceMgr().translateFile(entry);
-
     const RewriteBuffer* buffer = m_rewriter->getRewriteBufferFor(id);
-
     cout << ">>>>> File:" << endl;
     cout << string(buffer->begin(), buffer->end());
     cout << "<<<<<< End file" << endl;
+*/
     return result;
 }
 

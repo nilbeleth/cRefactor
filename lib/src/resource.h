@@ -19,10 +19,12 @@ class RenamerByName;
  */
 enum eFileType
 {
-    T_Unknown,      /**< */
+    T_Unknown,      /**< For error purposes. */
     T_Source,       /**< A source file. */
     T_Header,       /**< Header file. */
-    T_Plain         /**< Plantext file. */
+    T_Plain,        /**< Plantext file. */
+    T_Binary,       /**< A binary file. */
+    T_Directory     /**< Directory. */
 };
 
 
@@ -31,11 +33,9 @@ enum eFileType
  */
 enum FileStatus
 {
-    E_Ok,
     E_Absent,
     E_ReadOnly,
-    E_Binary,
-    E_Directory
+    E_Write
 };
 
 

@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <iostream>
 #include "src/resource.h"
-#include "src/logger.h"
 #include "src/renamer.h"
 
 

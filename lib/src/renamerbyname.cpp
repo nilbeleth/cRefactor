@@ -41,6 +41,9 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
         virtual bool VisitNamedDecl(NamedDecl* decl);
 
         //
+        virtual bool VisitDeclaratorDecl(DeclaratorDecl* decl);
+
+        //
         virtual bool VisitVarDecl(VarDecl* decl);
 
         //
@@ -60,6 +63,8 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
         inline bool inValidLoc(const SourceLocation loc);
 
         inline bool checkTypeIdent(const string decl, const string name);
+
+        bool checkQualifier(NestedNameSpecifier* qualifier, NestedNameSpecifierLoc qLoc);
 };
 
 //
@@ -84,7 +89,6 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
     if( !inValidLoc(loc) )
         return true;
 
-
     // destructor has a ~ before, so we need to know if it's a destructor or not
     if( isa<CXXDestructorDecl>(decl) )
     {
@@ -104,11 +108,23 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
     if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
         return true;
 
-    Location location = Location::getAsThisLocation(_astContext->getSourceManager(),loc.getLocWithOffset(offset));
+    Location location(_astContext->getSourceManager(),loc.getLocWithOffset(offset));
     refactor::Replacements& replacements = _renamer->getChanges();
     replacements.push_back(refactor::Replacement(location, name.size()-offset, _renamer->getNewSymbol()));
 
-    cout << "Declaration of (" << _renamer->getOldSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+    //cout << "Declaration of (" << _renamer->getOldSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+
+    return true;
+}
+
+// check only for qualifiers in this
+bool RenamingMutator::VisitDeclaratorDecl(DeclaratorDecl* decl)
+{
+    NestedNameSpecifier* qualifier = decl->getQualifier();
+    NestedNameSpecifierLoc loc = decl->getQualifierLoc();
+
+    if( qualifier )
+        checkQualifier(qualifier, loc);
 
     return true;
 }
@@ -132,11 +148,11 @@ bool RenamingMutator::VisitVarDecl(VarDecl* decl)
     // Type
     if( checkTypeIdent(name, _renamer->getOldSymbol()) )
     {
-        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc);
+        Location location(_astContext->getSourceManager(), loc);
         refactor::Replacements& replacements = _renamer->getChanges();
         replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
-        cout << "Type usage of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+        //cout << "Type usage of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
 
     return true;
@@ -160,47 +176,7 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
         // the qualifier could be the thing we are looking for
         if( expr->hasQualifier() )
         {
-            NestedNameSpecifier* qualifier = expr->getQualifier();
-            SourceLocation nLoc = expr->getQualifierLoc().getLocalBeginLoc();
-
-            switch( qualifier->getKind() )
-            {
-                case NestedNameSpecifier::Namespace:
-                {
-                    // este by sa mal cyklicli dako ziskavat prefix pokial ide o namespacy vnorene do seba
-                    NamespaceDecl* namespaceDecl = qualifier->getAsNamespace();
-
-                    if( !(_renamer->getRestrictType() & I_Namespace) )
-                        break;
-
-                    if( namespaceDecl->getNameAsString() == _renamer->getOldSymbol() )
-                    {
-                        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), nLoc);
-                        refactor::Replacements& replacements = _renamer->getChanges();
-                        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
-
-                        cout << "Qualifier of (" << namespaceDecl->getNameAsString() << ") at " << nLoc.printToString(_astContext->getSourceManager()) << endl;
-                    }
-                    break;
-                }
-
-                case NestedNameSpecifier::NamespaceAlias:
-                {
-                    //NamespaceAliasDecl* aliasDecl = qualifier->getAsAliasNamespace();
-                    //cout << "For (" << name << ") is identifier: " << aliasDecl->getNameAsString() << endl;
-                    break;
-                }
-
-                case NestedNameSpecifier::TypeSpec:
-                {
-                    //Type* type qualifier->getAsType();
-                    // TODO (nilbeleth#1#): tuna by som si mal ziskat triedu z Class::methond()
-                    break;
-                }
-            }
-
-            if( qualifier->getAsType() && !qualifier->getAsType()->isBuiltinType() )
-                ;//cout << "Of type: " << qualifier->getAsType()->getTypeClassName() << endl;
+            checkQualifier(expr->getQualifier(), expr->getQualifierLoc());
         }
 
         // does the name match?
@@ -219,11 +195,11 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
         if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
             return true;
 
-        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
+        Location location(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
         refactor::Replacements& replacements = _renamer->getChanges();
         replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
-        cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+        //cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
 
     return true;
@@ -260,11 +236,11 @@ bool RenamingMutator::VisitMemberExpr(MemberExpr* expr)
         if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
             return true;
 
-        Location location = Location::getAsThisLocation(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
+        Location location(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
         refactor::Replacements& replacements = _renamer->getChanges();
         replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
-        cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+        //cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
 
     return true;
@@ -297,6 +273,77 @@ bool RenamingMutator::checkTypeIdent(const string decl, const string name)
     if( pos + name.size() < decl.size() && decl.at(pos+name.size()) != ' ' )
         return false;
 
+    return true;
+}
+
+bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameSpecifierLoc qLoc)
+{
+    if( !qualifier )
+        return false;
+
+    SourceLocation loc = qLoc.getLocalBeginLoc();
+
+    switch( qualifier->getKind() )
+    {
+        case NestedNameSpecifier::Identifier:
+            DEBUG("Option \'NestedNameSpecifier::NamespaceAlias\' not supported.")
+            break;
+        case NestedNameSpecifier::Namespace:
+        {
+            // este by sa mal cyklicli dako ziskavat prefix pokial ide o namespacy vnorene do seba
+            NamespaceDecl* namespaceDecl = qualifier->getAsNamespace();
+
+            if( !(_renamer->getRestrictType() & I_Namespace) )
+                break;
+
+            if( namespaceDecl->getNameAsString() == _renamer->getOldSymbol() )
+            {
+                Location location(_astContext->getSourceManager(), loc);
+                refactor::Replacements& replacements = _renamer->getChanges();
+                replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+
+                //cout << "Qualifier of (" << namespaceDecl->getNameAsString() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+            }
+            break;
+        }
+        case NestedNameSpecifier::NamespaceAlias:
+            // namespace aliases... who use that...
+            DEBUG("Option \'NestedNameSpecifier::NamespaceAlias\' not supported.")
+            break;
+        case NestedNameSpecifier::TypeSpec:
+        {
+            const Type* type = qualifier->getAsType();
+            CXXRecordDecl* record = type->getAsCXXRecordDecl();     // TODO (nilbeleth#1#): ziskat ako RecordDecl a nie  CXX
+            if( record )
+            {
+                string recordName = record->getNameAsString();
+
+                // is this type we are looking for?
+                if( !(_renamer->getRestrictType() & _renamer->identify(record)) )
+                    return true;
+
+                if( recordName == _renamer->getOldSymbol() )
+                {
+                    Location location(_astContext->getSourceManager(), loc);
+                    refactor::Replacements& replacements = _renamer->getChanges();
+                    replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+
+                    //cout << "Qualifier of (" << recordName << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
+                }
+            }
+            break;
+        }
+        case NestedNameSpecifier::TypeSpecWithTemplate:
+            // templates sucks... so far
+            DEBUG("Option \'NestedNameSpecifier::TypeSpecWithTemplate\' not supported.")
+            break;
+        case NestedNameSpecifier::Global:
+            // just ignore this case - '::' is not interesting
+            break;
+        default:
+            WARNING("Unrecognized option: check doxy for new types.")
+            break;
+    }
     return true;
 }
 
@@ -340,9 +387,11 @@ int RenamerByName::analyze()
 {
     // ensure compilation DB is present
     string buildPath = "./";            // TODO (nilbeleth#1#): porozmyslaj nad dakou dynamickou cestou k buildPath
-    if( File::exists(buildPath + COMPILE_DB_FILE) )
+    if( File::exists(buildPath + COMPILE_DB_FILE) && COMPILE_DB_OVERWRITE )
+    {
         WARNING("Compilation DB already present... overwriting.")
-    m_resource->generateJSONDatabase();
+        m_resource->generateJSONDatabase();
+    }
 
 
     // and parse it

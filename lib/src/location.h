@@ -46,7 +46,7 @@ class Location
         /**
          *
          */
-        Location(const clang::SourceLocation loc, const clang::SourceManager& SM);
+        Location(const clang::SourceManager& SM, const clang::SourceLocation loc);
 
         /** Default destructor */
         virtual ~Location() {}
@@ -89,8 +89,6 @@ class Location
         unsigned m_column;
 
         clang::SourceLocation getAsSourceLocation(clang::SourceManager& SM) const;
-
-        // TODO: vymysliet ci to chcem ako position alebo ako col+line a spravit prechodnu funkciu
 };
 
 

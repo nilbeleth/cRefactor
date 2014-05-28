@@ -51,7 +51,7 @@ PROG = librefactor
 
 
 
-.PHONY: all pre-build build static shared install pack clean purge doxygen
+.PHONY: all pre-build build install pack clean purge doxygen
 
 #
 # Object targets

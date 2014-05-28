@@ -33,7 +33,7 @@ static int format(const string& filename)
     OwningPtr<MemoryBuffer> code;       // some sort of buffer for the file
     if(error_code ec = MemoryBuffer::getFile(filename, code) )
     {
-        llvm::errs() << "Dojebabrane: " << ec.message() << "\n";
+        llvm::errs() << "ERROR: " << ec.message() << "\n";
         return 1;
     }
     if( code->getBufferSize() == 0 )

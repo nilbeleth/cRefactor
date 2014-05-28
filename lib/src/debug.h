@@ -34,7 +34,9 @@
     }
 
 #define ERROR(X) \
-		{ std::cerr << "\33[22;31m" << "Error: " << X  << " -> (" << __FILE__ << ":" << std::dec << __LINE__ << ")" << "\33[0m" << std::endl; }
+    { \
+        std::cerr << "\33[22;31m" << "Error: " << X  << " -> (" << __FILE__ << ":" << std::dec << __LINE__ << ")" << "\33[0m" << std::endl; \
+    }
 
 #define WARNING(X) \
     { \

@@ -101,10 +101,22 @@ bool File::exists(const string& filename)
     return false;
 }
 
+bool File::isHeaderFile(const string& filename)
+{
+    ERROR("Not yet implemented.")
+    return false;
+}
+
+bool File::isSourceFile(const string& filename)
+{
+    ERROR("Not yet implemented.")
+    return false;
+}
+
 
 string File::getPath(const string& name)
 {
-    // TODO (nilbeleth#1#): zase... platform-dependant
+    // FIXME (nilbeleth#1#): platform-dependant
     char buffer[PATH_MAX];
     if( NULL == realpath(name.c_str(), buffer) )
         ERROR("Can't get correct absolute path.")

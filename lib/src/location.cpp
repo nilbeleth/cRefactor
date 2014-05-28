@@ -28,7 +28,7 @@ Location::Location(const std::string filePath, const unsigned line, const unsign
     // TODO (nilbeleth#1#): kontrola ci neprechadza za koniec a column posunut dalej
 }
 
-Location::Location(const SourceLocation loc, const SourceManager& SM)
+Location::Location(const SourceManager& SM, const SourceLocation loc)
 {
     m_line = SM.getExpansionLineNumber(loc);
     m_column = SM.getExpansionColumnNumber(loc);
@@ -109,7 +109,7 @@ SourceLocation Location::getAsSourceLocation(SourceManager& SM) const
         SourceLocation start = SM.translateLineCol(ID, m_line, m_column);
 
         //const SourceLocation start = SM.getLocForStartOfFile(ID);
-        DEBUG("Location translated as: " << start.printToString(SM));
+        //DEBUG("Location translated as: " << start.printToString(SM));
         //if( location.isValid() )
             return start;
     }
@@ -119,6 +119,7 @@ SourceLocation Location::getAsSourceLocation(SourceManager& SM) const
 
 Location Location::getAsThisLocation(const SourceManager& SM, const SourceLocation loc)
 {
+    WARNING("Location::getAsThisLocation() is deprecated. Use Location(const SourceLocation loc, const SourceManager& SM) instead!")
     PresumedLoc pLoc = SM.getPresumedLoc(loc);
     return Location(pLoc.getFilename(), pLoc.getLine(), pLoc.getColumn());
 }
