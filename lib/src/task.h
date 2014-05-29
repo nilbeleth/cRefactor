@@ -36,7 +36,11 @@
  * @section future Future work
  * TODO: I have really lot of work to do here.
  * <ul>
- *      <li>Manzovanie includov</li>
+ *      <li>Renaming by location</li>
+ *      <li>Source code formatting</li>
+ *      <li>Method extraction</li>
+ *      <li>Includes manager</li>
+ *      <li>Bool expression simplifier</li>
  * </ul>
  */
 
