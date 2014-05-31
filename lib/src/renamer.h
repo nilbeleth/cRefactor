@@ -47,7 +47,7 @@ enum IdentType
  *
  *
  */
-class Renamer : public Task
+class Renamer final : public Task
 {
     public:
         /**
@@ -90,7 +90,7 @@ class Renamer : public Task
          *       error.
          * @return  Returns 1 if processing fails, 0 otherwise.
          */
-        virtual int analyze();
+        virtual int analyze() override;
 
         /**
          * Get all possible replacements determined

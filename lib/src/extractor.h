@@ -15,7 +15,7 @@ namespace refactor
  * Take a snippet of function and method and
  * extract it as new function.
  */
-class Extractor : public Task
+class Extractor final : public Task
 {
     public:
         /** Default constructor */
@@ -44,29 +44,7 @@ class Extractor : public Task
          *       error.
          * @return  Returns 1 if processing fails, 0 otherwise.
          */
-        virtual int analyze();
-
-        /**
-         * Get all possible replacements determined
-         * by analysis.
-         */
-        //virtual Replacements getChanges() const;
-
-        /**
-         * Apply a replacement if it's possible.
-         * @param replace   A replacement to be apllied.
-         * @return          Return 0 if the replacement
-         *                  is successfully apllied, 1 otherwise.
-         */
-        //virtual int applyChange(const Replacement& replace) const;
-
-        /**
-         * Apply all possible replacements.
-         * @return          Return 0 if the replacement
-         *                  is successfully apllied, 1 otherwise.
-         */
-        //virtual int commit();
-
+        virtual int analyze() override;
 
     protected:
     private:

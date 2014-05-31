@@ -126,10 +126,10 @@ class File : public Resource
 
 
         /** @warning Do not use this. */
-        virtual int load(const std::string& filename);
+        virtual int load(const std::string& filename) override;
 
         /** @warning Do not use this. */
-        virtual int unload(const std::string& filename);
+        virtual int unload(const std::string& filename) override;
 
 
         bool operator==(const File& rhs);
@@ -152,11 +152,11 @@ class File : public Resource
         /**
          * @brief Get the names of all source files.
          */
-        std::vector<std::string> getSources() const;
+        std::vector<std::string> getSources() const override;
 
 
         /** @brief Pretty print. */
-        virtual std::string asString() const;
+        virtual std::string asString() const override;
 
 
         /**
@@ -164,7 +164,7 @@ class File : public Resource
          * @param filename  Filename
          * @return          Return true if file exists and it could be open for reading.
          */
-        static inline bool exists(const std::string& filename);
+        static bool exists(const std::string& filename);
 
 
         /**
@@ -187,7 +187,7 @@ class File : public Resource
          * @param path  A directory to store new database.
          * @return      Returns 1 if fails, 0 otherwise.
          */
-        int generateJSONDatabase(const std::string path = "./") const;
+        int generateJSONDatabase(const std::string path = "./") const override;
 
 
     private:
@@ -220,7 +220,7 @@ class File : public Resource
  *
  *
  */
-class Project : public Resource
+class Project final : public Resource
 {
     friend class RenamerByName;
 
@@ -241,7 +241,7 @@ class Project : public Resource
 
 
         /** @brief Get the names of all source files. */
-        std::vector<std::string> getSources() const;
+        std::vector<std::string> getSources() const override;
 
 
         /** @brief Add a new library search path. */
@@ -249,7 +249,7 @@ class Project : public Resource
 
 
         /** @brief Pretty print. */
-        virtual std::string asString() const;
+        virtual std::string asString() const override;
 
 
         /**
@@ -267,7 +267,7 @@ class Project : public Resource
          * @param path  A directory to store new database.
          * @return      Returns 1 if fails, 0 otherwise.
          */
-        int generateJSONDatabase(const std::string path = "./") const;
+        int generateJSONDatabase(const std::string path = "./") const override;
 
         /**
          *

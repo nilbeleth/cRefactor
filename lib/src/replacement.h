@@ -18,7 +18,7 @@ namespace refactor
  * These are mostly created by one of the
  * refactoring tasks.
  */
-class Replacement
+class Replacement final
 {
     //friend class Renamer;
     //friend class Reformatter;

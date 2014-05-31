@@ -16,7 +16,7 @@ namespace refactor
  * the formatting to follow specific
  * guidelines.
  */
-class CodeStyle
+class CodeStyle final
 {
     public:
         CodeStyle();
@@ -87,11 +87,8 @@ class CodeStyle
          */
         std::string configurationAsText() const;
 
-
     protected:
-
     private:
-
 };
 
 
@@ -100,7 +97,7 @@ class CodeStyle
  *
  *
  */
-class Reformatter : public Task
+class Reformatter final : public Task
 {
     public:
         /** Default constructor */
@@ -117,29 +114,7 @@ class Reformatter : public Task
          *       error.
          * @return  Returns 1 if processing fails, 0 otherwise.
          */
-        virtual int analyze();
-
-        /**
-         * Get all possible replacements determined
-         * by analysis.
-         */
-        //virtual Replacements getChanges() const;
-
-        /**
-         * Apply a replacement if it's possible.
-         * @param replace   A replacement to be apllied.
-         * @return          Return 0 if the replacement
-         *                  is successfully apllied, 1 otherwise.
-         */
-        //virtual int applyChange(const Replacement& replace) const;
-
-        /**
-         * Apply all possible replacements.
-         * @return          Return 0 if the replacement
-         *                  is successfully apllied, 1 otherwise.
-         */
-        //virtual int commit();
-
+        virtual int analyze() override;
 
     protected:
     private:

@@ -31,7 +31,7 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
 {
     public:
         explicit RenamingMutator(RenamerByName* renamer)
-            : _astContext(NULL), _renamer(renamer)
+            : _astContext(nullptr), _renamer(renamer)
         { }
 
         // set new context and traverse AST
@@ -75,7 +75,7 @@ void RenamingMutator::HandleTranslationUnit(ASTContext& context)
     TranslationUnitDecl* D = context.getTranslationUnitDecl();
     TraverseDecl(D);
 
-    _astContext = NULL;
+    _astContext = nullptr;
 }
 
 //
@@ -132,7 +132,6 @@ bool RenamingMutator::VisitDeclaratorDecl(DeclaratorDecl* decl)
 bool RenamingMutator::VisitVarDecl(VarDecl* decl)
 {
     QualType typeQT = decl->getType();
-    const Type* type = typeQT.getTypePtrOrNull();
     SourceLocation loc = decl->getTypeSpecStartLoc();
 
 

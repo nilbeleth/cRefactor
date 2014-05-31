@@ -22,29 +22,29 @@ using namespace refactor;
 
 
 Task::Task()
-    : m_rewriter(NULL), m_SM(NULL), m_FM(NULL)
+    : m_rewriter(nullptr), m_SM(nullptr), m_FM(nullptr)
 {
     if( !initializeRewriter() )
     {
-        m_rewriter = NULL;
-        m_SM = NULL;
-        m_FM = NULL;
+        m_rewriter = nullptr;
+        m_SM = nullptr;
+        m_FM = nullptr;
     }
 }
 
 Task::~Task()
 {
-    if( m_rewriter != NULL )
+    if( m_rewriter != nullptr )
         delete m_rewriter;
-    if( m_SM != NULL )
+    if( m_SM != nullptr )
         delete m_SM;
-    if( m_FM != NULL )
+    if( m_FM != nullptr )
         delete m_FM;
 }
 
 int Task::applyChange(const Replacement& replace)
 {
-    if( m_rewriter == NULL )
+    if( m_rewriter == nullptr )
     {
         if( !initializeRewriter() )
             return 1;
@@ -62,7 +62,7 @@ int Task::applyChange(const Replacement& replace)
 
 int Task::commit()
 {
-    if( m_rewriter == NULL )
+    if( m_rewriter == nullptr )
     {
         if( !initializeRewriter() )
             return 1;
@@ -79,7 +79,7 @@ int Task::commit()
 
 /*
     const FileEntry* entry = m_rewriter->getSourceMgr().getFileManager().getFile("test.cpp");
-    if( entry == NULL )
+    if( entry == nullptr )
     {
         ERROR("File not found.")
         return 1;

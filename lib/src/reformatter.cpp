@@ -56,6 +56,9 @@ static int format(const string& filename)
  *****************************/
 Reformatter::Reformatter(Resource* resource, CodeStyle style)
 {
+    (void) resource;
+    (void) style;
+    ERROR("Not yet implemented.")
     //ctor
 }
 
@@ -69,22 +72,3 @@ int Reformatter::analyze()
     int result = ::format("test.cpp");
     return result;
 }
-
-/*
-refactor::Replacements Reformatter::getChanges() const
-{
-    ERROR("Not yet implemented.")
-}
-
-int Reformatter::applyChange(const Replacement& replace) const
-{
-    ERROR("Not yet implemented.")
-    return 0;
-}
-
-int Reformatter::commit()
-{
-    ERROR("Not yet implemented.")
-    return 0;
-}
-*/

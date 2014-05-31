@@ -88,8 +88,6 @@ IdentType RenamingStrategy::identify(const Decl* decl) const
 
 IdentType RenamingStrategy::identify(const string& type) const
 {
-    size_t pos;
-
     if( type.find("class") != string::npos )
         return I_ClassName;
     else if( type.find("struct") != string::npos )

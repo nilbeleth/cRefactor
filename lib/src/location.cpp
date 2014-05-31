@@ -18,6 +18,7 @@ using namespace refactor;
 Location::Location(const std::string filePath, const unsigned position)
     : m_filePath(""), m_line(1), m_column(1)
 {
+    (void) filePath;
     (void) position;
     ERROR("Not yet implemented.")
 }
@@ -95,7 +96,7 @@ std::string Location::asString() const
 SourceLocation Location::getAsSourceLocation(SourceManager& SM) const
 {
     const FileEntry* entry = SM.getFileManager().getFile(m_filePath, true);
-    if( entry != NULL )
+    if( entry != nullptr )
     {
         FileID ID;
 

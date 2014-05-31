@@ -66,12 +66,14 @@ std::string File::asString() const
 
 int File::load(const string& filename)
 {
+    (void) filename;
     ERROR("Not yet implemented.")
     return 0;
 }
 
 int File::unload(const string& filename)
 {
+    (void) filename;
     ERROR("Not yet implemented.")
     return 0;
 }
@@ -103,12 +105,14 @@ bool File::exists(const string& filename)
 
 bool File::isHeaderFile(const string& filename)
 {
+    (void) filename;
     ERROR("Not yet implemented.")
     return false;
 }
 
 bool File::isSourceFile(const string& filename)
 {
+    (void) filename;
     ERROR("Not yet implemented.")
     return false;
 }
@@ -118,7 +122,7 @@ string File::getPath(const string& name)
 {
     // FIXME (nilbeleth#1#): platform-dependant
     char buffer[PATH_MAX];
-    if( NULL == realpath(name.c_str(), buffer) )
+    if( nullptr == realpath(name.c_str(), buffer) )
         ERROR("Can't get correct absolute path.")
 
     // remove the file from path
@@ -170,7 +174,7 @@ vector<string> File::getSources() const
  *       Class Project       *
  *****************************/
 Project::Project()
-    : Resource(), m_logger(NULL)
+    : Resource(), m_logger(nullptr)
 {
     m_logger = new StdLogger();
 
@@ -181,6 +185,7 @@ Project::Project()
 //
 Project::Project(const std::string dir)
 {
+    (void) dir;
     ERROR("Not yet implemeted.")
 }
 
@@ -191,14 +196,14 @@ Project::~Project()
     if( m_logger )
     {
         delete m_logger;
-        m_logger = NULL;
+        m_logger = nullptr;
     }
 
     // dispose all files
     for(vector<File*>::iterator it = m_sources.begin(), e = m_sources.end(); it != e; ++it)
     {
         delete *it;
-        *it = NULL;
+        *it = nullptr;
     }
     m_sources.clear();
 }
@@ -223,6 +228,7 @@ int Project::load(const string& filename)
 //
 int Project::unload(const string& filename)
 {
+    (void) filename;
     ERROR("Not yet imeplemented.")
     return 0;
 }

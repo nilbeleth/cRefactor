@@ -30,7 +30,7 @@ string Utils::printDecl(const NamedDecl* decl, const ASTContext* astContext)
     SourceLocation b = decl->getLocation();
 
     ss << decl->getNameAsString();
-    if( astContext != NULL )
+    if( astContext != nullptr )
         ss << ": " << b.printToString(astContext->getSourceManager()) << endl;
     else
         ss << endl;

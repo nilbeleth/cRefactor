@@ -10,7 +10,7 @@ namespace refactor
 /**
  * Describes different types of messages.
  */
-enum TLogLevel
+enum class TLogLevel
 {
     V_Ignored   = 0,
     V_Info      = 1,
@@ -44,7 +44,7 @@ class Logger
          * @param msg
          * @param severity
          */
-        virtual void log(const std::string msg, const int severity = V_Info) const =0;
+        virtual void log(const std::string msg, const TLogLevel severity = TLogLevel::V_Info) const =0;
 
         /**
          * Log new message as an informative one.
@@ -82,7 +82,7 @@ class Logger
  *
  *
  */
-class StdLogger : public Logger
+class StdLogger final : public Logger
 {
     public:
         StdLogger() {}
@@ -93,31 +93,31 @@ class StdLogger : public Logger
          * @param msg
          * @param severity
          */
-        virtual void log(const std::string msg, const int severity = V_Info) const;
+        virtual void log(const std::string msg, const TLogLevel severity = TLogLevel::V_Info) const override;
 
         /**
          * Log new message as an informative one.
          * @param msg
          */
-        virtual void info(const std::string msg) const;
+        virtual void info(const std::string msg) const override;
 
         /**
          * Log new message as a warning.
          * @param msg
          */
-        virtual void warn(const std::string msg) const;
+        virtual void warn(const std::string msg) const override;
 
         /**
          * Log new message as an error.
          * @param msg
          */
-        virtual void error(const std::string msg) const;
+        virtual void error(const std::string msg) const override;
 
         /**
          * Log new message as a fatal error.
          * @param msg
          */
-        virtual void fatal(const std::string msg) const;
+        virtual void fatal(const std::string msg) const override;
     protected:
     private:
 };

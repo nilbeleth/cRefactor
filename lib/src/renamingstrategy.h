@@ -76,7 +76,7 @@ class RenamingStrategy
  *
  *
  */
-class RenamerByName : public RenamingStrategy
+class RenamerByName final : public RenamingStrategy
 {
     friend class Renamer;
     friend class RenamingMutator;
@@ -86,7 +86,7 @@ class RenamerByName : public RenamingStrategy
 
         ~RenamerByName();
 
-        int analyze();
+        int analyze() override;
 
         std::string getOldSymbol() const { return m_old; }
     protected:
@@ -101,15 +101,19 @@ class RenamerByName : public RenamingStrategy
  *
  *
  */
-class LocatorRenamer : public RenamingStrategy
+class LocatorRenamer final  : public RenamingStrategy
 {
     public:
         LocatorRenamer();
         ~LocatorRenamer() {}
+
+        int analyze() override;
+
+        Location getOrigLoc() const { return m_origLoc; }
     protected:
 
     private:
-
+        Location m_origLoc;
 };
 
 }   // end namespace refactor

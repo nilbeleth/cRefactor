@@ -17,7 +17,7 @@ class File;
  * @brief A location in source file.
  *
  */
-class Location
+class Location final
 {
     friend class Task;
     friend class RenamingMutator;
@@ -97,7 +97,7 @@ class Location
  *
  * A trivial tuple used to represent a source range.
  */
-class LocationRange
+class LocationRange final
 {
     public:
         LocationRange(const Location& from, const Location& to);

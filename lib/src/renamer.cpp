@@ -49,9 +49,7 @@ Renamer::Renamer(Resource* resource, const Location& loc, const string& newSymbo
 Renamer::~Renamer()
 {
     delete m_impl;
-    m_impl = NULL;
-    //delete m_rewriter;
-    //m_rewriter = NULL;
+    m_impl = nullptr;
 }
 
 

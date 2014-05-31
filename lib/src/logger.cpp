@@ -31,20 +31,20 @@ std::string Logger::getTime() const
 ////
 //  StdLogger
 ////
-void StdLogger::log(const std::string msg, const int severity) const
+void StdLogger::log(const std::string msg, const TLogLevel severity) const
 {
     switch(severity)
     {
-        case V_Info:
+        case TLogLevel::V_Info:
             info(msg);
             break;
-        case V_Warning:
+        case TLogLevel::V_Warning:
             warn(msg);
             break;
-        case V_Error:
+        case TLogLevel::V_Error:
             error(msg);
             break;
-        case V_Fatal:
+        case TLogLevel::V_Fatal:
             fatal(msg);
             break;
         default:

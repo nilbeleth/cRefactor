@@ -8,12 +8,17 @@ using namespace refactor;
 
 Extractor::Extractor(Resource* resource, const Location& begin, const Location& end)
 {
-    //ctor
+    (void) resource;
+    (void) begin;
+    (void) end;
+    ERROR("Not yet implemented.")
 }
 
 Extractor::Extractor(Resource* resource, const LocationRange& range)
 {
-
+    (void) resource;
+    (void) range;
+    ERROR("Not yet implemented.")
 }
 
 Extractor::~Extractor()
@@ -25,16 +30,3 @@ int Extractor::analyze()
 {
     return 0;
 }
-
-/*
-refactor::Replacements Extractor::getChanges() const
-{
-    ERROR("Not yet implemented.")
-}
-
-int Extractor::commit()
-{
-    ERROR("Not yet implemented.")
-    return 0;
-}
-*/
