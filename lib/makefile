@@ -11,8 +11,12 @@ BUILD = ./obj
 SOURCES = location.cpp resource.cpp replacement.cpp \
 	  task.cpp renamer.cpp reformatter.cpp extractor.cpp \
 	  logger.cpp utils.cpp renamingstrategy.cpp renamerbyname.cpp
+HEADERS = location.h resource.h replacement.h \
+	  task.h renamer.h reformatter.h extractor.h \
+	  logger.h defines.h
 
-CXX = g++
+
+CXX = clang++
 LLVMCOMPONENTS := cppbackend
 RTTIFLAG := #-fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
@@ -23,7 +27,7 @@ LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 OBJECTS = $(patsubst %,$(BUILD)/%,$(SOURCES:.cpp=.o))
 CPPFLAGS = 						# preprocessor flags
-$(CXXFLAGS) = -std=c++98 -Wall -Wextra -pedantic -W -g $(CXXFLAGS)
+CXXFLAGS := -std=c++11 -Wall -Wextra -pedantic -W -g $(CXXFLAGS)
 LIBS = \
 		-lclangTooling\
 		-lclangFrontendTool\
@@ -73,15 +77,9 @@ $(BUILD)/%.o: $(SRC)/%.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 
-static: $(OBJECTS)
-	ar rcs $(PROG).a $^
-
-#ashared: $(OBJECTS)
-#	$(CXX) -shared -Wl,-soname,$(PROG).so.1 -o $(PROG).so.1.0.1 $^
-
-
 install:
-	@echo "Not implemeted."
+	cp $(addprefix $(SRC)/, $(HEADERS)) ./inc/
+	mv librefactor ./bin/librefactor.a
 
 
 pack:
@@ -89,13 +87,16 @@ pack:
 
 clean:
 	rm -rf $(BUILD)
-	rm -f doxygen.log
-	rm -rf ./doc/html
+
+uninstall:
 	rm -rf $(PROG)
+	rm -rf ./inc/* ./bin/*
 
 purge:
 	@make clean
-	rm -rf $(PROG) $(PROG).a $(PROG).so*
+	@make uninstall
+	rm -rf doxygen.log
+	rm -rf ./doc/html
 
 doxygen:
 	doxygen ./doc/doxygen.cfg
