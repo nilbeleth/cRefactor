@@ -1,0 +1,9 @@
+-> test01
+    - jeden subor
+    - identifikator calls -> called
+    - jednoduche premenovanie bez parametrov
+-> test02
+    - 2 sourcy, 1 header
+    - identifikator fib -> dib_rek
+    - jednoduche premennovanie bez parametrov ale header je vlozeny do dvoch
+      suborov - spracuva sa 2x

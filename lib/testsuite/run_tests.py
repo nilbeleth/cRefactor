@@ -51,13 +51,16 @@ def do_test(dir):
         return
     # run tester
     commands.getstatusoutput("./tester " + args + " " + files)
+    #print(ret[1])
 
     # diff it with reference and then delete it
     diffs = 0
     for file in files.split():
         ret = commands.getstatusoutput('diff ' + file + " " + file + ".ref")
+        print('diff ' + file + " " + file + ".ref")
         if ret[0] != 0:
             diffs = diffs + 1
+            print(ret[1])
         os.remove(file)
 
     if diffs == 0:

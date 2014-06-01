@@ -1,0 +1,10 @@
+#include "fib.h"
+
+
+int fib_rek(const int n)
+{
+    if( n < 3 )
+    	return 1;
+    else
+        return fib_rek(n-1) + fib_rek(n-2);
+}
