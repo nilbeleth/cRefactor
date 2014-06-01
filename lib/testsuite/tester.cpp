@@ -2,9 +2,9 @@
 #include <iostream>
 #include <getopt.h>
 #include <vector>
-#include "src/resource.h"
-#include "src/logger.h"
-#include "src/renamer.h"
+#include "resource.h"
+#include "logger.h"
+#include "renamer.h"
 
 
 

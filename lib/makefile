@@ -87,9 +87,9 @@ pack:
 
 clean:
 	rm -rf $(BUILD)
+	rm -rf $(PROG)
 
 uninstall:
-	rm -rf $(PROG)
 	rm -rf ./inc/* ./bin/*
 
 purge:
