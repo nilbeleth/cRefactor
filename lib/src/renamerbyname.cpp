@@ -386,11 +386,16 @@ int RenamerByName::analyze()
 {
     // ensure compilation DB is present
     string buildPath = "./";            // TODO (nilbeleth#1#): porozmyslaj nad dakou dynamickou cestou k buildPath
-    if( File::exists(buildPath + COMPILE_DB_FILE) && COMPILE_DB_OVERWRITE )
+    if( File::exists(buildPath + COMPILE_DB_FILE) )
     {
-        WARNING("Compilation DB already present... overwriting.")
-        m_resource->generateJSONDatabase();
+        if( COMPILE_DB_OVERWRITE )
+        {
+            WARNING("Compilation DB already present... overwriting.")
+            m_resource->generateJSONDatabase();
+        }
     }
+    else
+        m_resource->generateJSONDatabase();
 
 
     // and parse it
