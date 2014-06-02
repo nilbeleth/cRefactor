@@ -18,7 +18,7 @@ class RenamingStrategy;
  *
  * Describe the types of identifiers.
  */
-enum IdentType
+enum class IdentType : unsigned int
 {
     I_Unknown       = 0x0000,     /**< Reserve for invalid results. */
     I_Variable      = 0x0001,     /**< A name of variable. */
@@ -29,7 +29,7 @@ enum IdentType
     I_EnumName      = 0x0020,     /**< An enumeration name. */
     I_ClassMember   = 0x0040,     /**< A class member variable. */
     I_StructMember  = 0x0080,     /**< A struct member variable. */
-    I_UnionMemeber  = 0x0100,     /**< A union member variable. */
+    I_UnionMemeber  = 0x0100,     /**< A union member variable. */      // FIXME (nilbeleth#1#): typo
     I_EnumItem      = 0x0200,     /**< An enumeration item. */
     I_FunctionName  = 0x0400,     /**< Function. */
     I_MethodName    = 0x0800,     /**< A class instance method.*/
@@ -40,6 +40,44 @@ enum IdentType
 //    I_MacroParm,        /**< */
     I_All           = 0x7FFF
 };
+
+inline constexpr IdentType operator&(IdentType __x, IdentType __y)
+{
+    return static_cast<IdentType>(static_cast<unsigned int>(__x) & static_cast<unsigned int>(__y));
+}
+
+inline constexpr IdentType operator|(IdentType __x, IdentType __y)
+{
+    return static_cast<IdentType>(static_cast<unsigned int>(__x) | static_cast<unsigned int>(__y));
+}
+
+inline constexpr IdentType operator^(IdentType __x, IdentType __y)
+{
+    return static_cast<IdentType>(static_cast<unsigned int>(__x) ^ static_cast<unsigned int>(__y));
+}
+
+inline constexpr IdentType operator~(IdentType __x)
+{
+    return static_cast<IdentType>(~static_cast<unsigned int>(__x));
+}
+
+inline IdentType operator&=(IdentType __x, IdentType __y)
+{
+    __x = __x & __y;
+    return __x;
+}
+
+inline IdentType operator|=(IdentType __x, IdentType __y)
+{
+    __x = __x | __y;
+    return __x;
+}
+
+inline IdentType operator^=(IdentType __x, IdentType __y)
+{
+    __x = __x ^ __y;
+    return __x;
+}
 
 
 /**

@@ -292,7 +292,7 @@ bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameS
             // este by sa mal cyklicli dako ziskavat prefix pokial ide o namespacy vnorene do seba
             NamespaceDecl* namespaceDecl = qualifier->getAsNamespace();
 
-            if( !(_renamer->getRestrictType() & I_Namespace) )
+            if( !(_renamer->getRestrictType() & IdentType::I_Namespace) )
                 break;
 
             if( namespaceDecl->getNameAsString() == _renamer->getOldSymbol() )
@@ -373,7 +373,7 @@ class RenamingActionFactory
  *       Class RenamerByName      *
  **********************************/
 RenamerByName::RenamerByName(Resource* resource, const string& origSymbol, const string& newSymbol)
-    : RenamingStrategy(resource, newSymbol, I_All, ""), m_old(origSymbol)
+    : RenamingStrategy(resource, newSymbol, IdentType::I_All, ""), m_old(origSymbol)
 {
 }
 

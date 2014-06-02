@@ -64,6 +64,11 @@ int Renamer::analyze()
     return result;
 }
 
+void Renamer::restrictToType(const IdentType type)
+{
+    m_impl->setRestrictType(type);
+}
+
 
 /*
 refactor::Replacements Renamer::getChanges() const

@@ -25,25 +25,25 @@ IdentType RenamingStrategy::identify(const Decl* decl) const
     if( isa<VarDecl>(decl) )
     {
         if( isa<ParmVarDecl>(decl) )
-            return I_Argument;
+            return IdentType::I_Argument;
         else
-            return I_Variable;
+            return IdentType::I_Variable;
     }
     else if( isa<CXXRecordDecl>(decl) )
     {
         const CXXRecordDecl* recordDecl = cast<CXXRecordDecl>(decl);
         if( recordDecl->isClass() )
-            return I_ClassName;
+            return IdentType::I_ClassName;
         else if( recordDecl->isStruct() )
-            return I_StructName;
+            return IdentType::I_StructName;
         else if( recordDecl->isUnion() )
-            return I_UnionName;
+            return IdentType::I_UnionName;
         else
             WARNING("Unable to distinguish between class, struct and union.");
     }
     else if( isa <EnumDecl>(decl) )
     {
-        return I_EnumName;
+        return IdentType::I_EnumName;
     }
     else if( isa<FieldDecl>(decl) )
     {
@@ -51,54 +51,54 @@ IdentType RenamingStrategy::identify(const Decl* decl) const
         const RecordDecl* recordDecl = fieldDecl->getParent();
 
         if( recordDecl->isClass() )
-            return I_ClassMember;
+            return IdentType::I_ClassMember;
         else if( recordDecl->isStruct() )
-            return I_StructMember;
+            return IdentType::I_StructMember;
         else if( recordDecl->isUnion() )
-            return I_UnionMemeber;
+            return IdentType::I_UnionMemeber;
         else
             WARNING("Unable to distinguish between class, struct and union member.");
     }
     else if( isa<EnumConstantDecl>(decl) )
     {
-        return I_EnumItem;
+        return IdentType::I_EnumItem;
     }
     else if( isa<FunctionDecl>(decl) )
     {
         if( isa<CXXMethodDecl>(decl) )
-            return I_MethodName;
+            return IdentType::I_MethodName;
         else
-            return I_FunctionName;
+            return IdentType::I_FunctionName;
     }
     else if( isa<TypedefDecl>(decl) )
     {
-        return I_Typedef;
+        return IdentType::I_Typedef;
     }
     else if( isa<NamespaceDecl>(decl) )
     {
-        return I_Namespace;
+        return IdentType::I_Namespace;
     }
     else
     {
         WARNING("Unable to identify the type of identifier.")
     }
 
-    return I_Unknown;
+    return IdentType::I_Unknown;
 }
 
 IdentType RenamingStrategy::identify(const string& type) const
 {
     if( type.find("class") != string::npos )
-        return I_ClassName;
+        return IdentType::I_ClassName;
     else if( type.find("struct") != string::npos )
-        return I_StructName;
+        return IdentType::I_StructName;
     else if( type.find("union") != string::npos )
-        return I_UnionName;
+        return IdentType::I_UnionName;
     else if( type.find("enum") != string::npos )
-        return I_EnumName;
+        return IdentType::I_EnumName;
     else
         WARNING("Unable to identify this identifier.")
 
 
-    return I_Unknown;
+    return IdentType::I_Unknown;
 }

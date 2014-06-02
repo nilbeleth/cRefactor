@@ -55,23 +55,29 @@ def do_test(dir):
 
     # diff it with reference and then delete it
     diffs = 0
+    errmsg = dir + ":\n"
     for file in files.split():
         ret = commands.getstatusoutput('diff ' + file + " " + file + ".ref")
-        print('diff ' + file + " " + file + ".ref")
         if ret[0] != 0:
             diffs = diffs + 1
-            print(ret[1])
+            errmsg += 'diff ' + file + " " + file + ".ref\n"
+            errmsg += ret[1] + "\n\n"
         os.remove(file)
 
     if diffs == 0:
         print_success(dir)
     else:
         print_failed(dir)
+        with open("results",'a') as file:
+            file.write(errmsg)
+            file.close()
 # end function do_test()
 
 
 
 if __name__ == "__main__":
+    os.remove('results')
+
     # compilation
     ret = commands.getstatusoutput('make')
     if ret[0] != 0:
