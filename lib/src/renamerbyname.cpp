@@ -140,11 +140,12 @@ bool RenamingMutator::VisitVarDecl(VarDecl* decl)
 
     string name = typeQT.getAsString();
 
-    // is this type we are looking for?
-    if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
+    // is this type we are looking for? (this identifying is akward... do something with it)
+    if( !(_renamer->getRestrictType() & _renamer->identify(name)) )
         return true;
 
     // Type
+    DEBUG("Probing: " << name)
     if( checkTypeIdent(name, _renamer->getOldSymbol()) )
     {
         Location location(_astContext->getSourceManager(), loc);
@@ -318,6 +319,7 @@ bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameS
                 string recordName = record->getNameAsString();
 
                 // is this type we are looking for?
+                DEBUG("Analyzing: " << recordName)
                 if( !(_renamer->getRestrictType() & _renamer->identify(record)) )
                     return true;
 

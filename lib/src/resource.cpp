@@ -35,19 +35,10 @@ File::File(const std::string& name)
     m_name = getFilename(name);
 
     // distinguish between header and source file
-    size_t pos = m_name.find(".");
-    if( pos != string::npos )
-    {
-        // There is a distinct possibility that file ends with ".".
-        // In this case I've got std::out_of_range exception here.
-        // Otherwise this should work just fine.
-        if( m_name.at(pos+1) == 'c' )
-            m_type = T_Source;
-        else if( m_name.at(pos+1) == 'h' )
-            m_type = T_Header;
-        else
-            m_type = T_Plain;
-    }
+    if( isHeaderFile(name) )
+        m_type = T_Header;
+    else if( isSourceFile(name) )
+        m_type = T_Source;
     else
         m_type = T_Plain;
 }
@@ -105,16 +96,30 @@ bool File::exists(const string& filename)
 
 bool File::isHeaderFile(const string& filename)
 {
-    (void) filename;
-    ERROR("Not yet implemented.")
-    return false;
+    size_t dotPos = filename.rfind(".");
+
+    if( dotPos == string::npos )
+        return false;
+
+    string ext = string(filename.begin()+dotPos+1, filename.end());
+
+    // C header: .h
+    // C++ header: .hh .H
+    return ext == "h" || ext == "hh" || ext == "H";
 }
 
 bool File::isSourceFile(const string& filename)
 {
-    (void) filename;
-    ERROR("Not yet implemented.")
-    return false;
+    size_t dotPos = filename.rfind(".");
+
+    if( dotPos == string::npos )
+        return false;
+
+    string ext = string(filename.begin()+dotPos+1, filename.end());
+
+    // C header: .c
+    // C++ header: .cpp .cxx .cc
+    return ext == "c" || ext == "cpp" || ext == "cxx" || ext == "cc";
 }
 
 
@@ -179,7 +184,7 @@ Project::Project()
     m_logger = new StdLogger();
 
     // TODO (nilbeleth#1#): defaultne kvoli tomu stdarg.h (implicitne to byva s clangom)
-    m_libPaths.push_back("/usr/lib64/clang/3.3/include/");
+    m_libPaths.push_back("/usr/lib64/clang/3.4/include/");
 }
 
 //

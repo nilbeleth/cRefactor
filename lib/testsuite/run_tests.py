@@ -44,13 +44,15 @@ def do_test(dir):
                 file = os.path.join(dir,f)
                 (source,sep,suffix) = file.rpartition('.')
                 shutil.copy(file, source)
+                #print("cp " + file + " " + source)
 
                 # aggregate source files
                 files = source + " " + files
     if files == "":
         return
     # run tester
-    commands.getstatusoutput("./tester " + args + " " + files)
+    ret = commands.getstatusoutput("./tester " + args + " " + files)
+    #print("./tester " + args + " " + files)
     #print(ret[1])
 
     # diff it with reference and then delete it

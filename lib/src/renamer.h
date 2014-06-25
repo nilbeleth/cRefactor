@@ -61,22 +61,19 @@ inline constexpr IdentType operator~(IdentType __x)
     return static_cast<IdentType>(~static_cast<unsigned int>(__x));
 }
 
-inline IdentType operator&=(IdentType __x, IdentType __y)
+inline constexpr IdentType operator&=(IdentType __x, IdentType __y)
 {
-    __x = __x & __y;
-    return __x;
+    return __x & __y;
 }
 
-inline IdentType operator|=(IdentType __x, IdentType __y)
+inline constexpr IdentType operator|=(IdentType __x, IdentType __y)
 {
-    __x = __x | __y;
-    return __x;
+    return __x | __y;
 }
 
-inline IdentType operator^=(IdentType __x, IdentType __y)
+inline constexpr IdentType operator^=(IdentType __x, IdentType __y)
 {
-    __x = __x ^ __y;
-    return __x;
+    return __x ^ __y;
 }
 
 

@@ -20,8 +20,12 @@ int main(int argc, char* argv[])
 
 
     // 2. step: creating a new renaming task
-    string old = "ClassBase", novy = "Foo";
+    string old = "Person", novy = "Knight";
     Renamer* renamer = new Renamer(&testing, old, novy);
+
+
+    // 2.5 step: additional info
+    renamer->restrictToType(IdentType::I_StructName);
 
 
     // 3. step: run analysis

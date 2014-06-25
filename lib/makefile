@@ -78,6 +78,7 @@ $(BUILD)/%.o: $(SRC)/%.cpp
 
 
 install:
+	mkdir -p bin/ inc/
 	cp $(addprefix $(SRC)/, $(HEADERS)) ./inc/
 	mv librefactor ./bin/librefactor.a
 
