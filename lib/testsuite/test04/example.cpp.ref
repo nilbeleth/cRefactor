@@ -1,0 +1,29 @@
+#include <iostream>
+
+
+using namespace std;
+
+
+
+struct arg
+{
+    char arg;
+};
+
+
+int arg(const int foo)
+{
+    if( foo == 1 )
+        return 0;
+
+arg:
+    return arg(foo-1);
+    goto arg;
+}
+
+
+int main(int argc, char* argv[])
+{
+   int arg = 7;
+   return arg(arg);
+}
