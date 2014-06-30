@@ -33,7 +33,6 @@ LIBS = \
 				-lclangASTMatchers\
 				-lclangBasic\
 				$(shell $(LLVMCONFIG) --libs)\
-				-lcurses
 
 all: build
 
