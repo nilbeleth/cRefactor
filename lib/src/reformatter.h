@@ -13,7 +13,7 @@ namespace refactor
  * @brief Source code format style.
  *
  * The CodeStyle is used to configure
- * the formatting to follow specific
+ * the formatting to follow a specific
  * guidelines.
  */
 class CodeStyle final
