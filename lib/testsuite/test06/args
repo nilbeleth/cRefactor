@@ -1,1 +1,0 @@
--R -o arg -n foo --restrict smem

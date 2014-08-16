@@ -4,6 +4,10 @@
     - jednoduche premenovanie bez parametrov
 -> test02
     - 2 sourcy, 1 header
-    - identifikator fib -> dib_rek
+    - identifikator fib -> fib_rek
     - jednoduche premennovanie bez parametrov ale header je vlozeny do dvoch
       suborov - spracuva sa 2x
+    * problem pri duplikovanom vyskyte... premenuje dva krat
+-> test03
+    - premenovanie podla nazvu obmedzene len na nazov premennej
+    * ma premenovavat len premenne premenovava aj definiciu funckie
