@@ -97,7 +97,7 @@ IdentType RenamingStrategy::identify(const string& type) const
     else if( type.find("enum") != string::npos )
         return IdentType::I_EnumName;
     else
-        WARNING("Unable to identify this identifier.")
+        WARNING("Unable to identify this identifier (" << type << ").")
 
 
     return IdentType::I_Unknown;

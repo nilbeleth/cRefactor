@@ -319,7 +319,6 @@ bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameS
                 string recordName = record->getNameAsString();
 
                 // is this type we are looking for?
-                DEBUG("Analyzing: " << recordName)
                 if( !(_renamer->getRestrictType() & _renamer->identify(record)) )
                     return true;
 
@@ -398,7 +397,6 @@ int RenamerByName::analyze()
     }
     else
         m_resource->generateJSONDatabase();
-
 
     // and parse it
     string errMsg;
