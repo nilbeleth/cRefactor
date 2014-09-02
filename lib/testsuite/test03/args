@@ -1,1 +1,1 @@
--R -o arg -n foo --restrict var
+-R -o Person -n Knight --restrict src
