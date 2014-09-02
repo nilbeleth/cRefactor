@@ -56,7 +56,9 @@ int Task::applyChange(const Replacement& replace)
     SourceLocation loc = replace.getLocation().getAsSourceLocation(*m_SM);
     m_rewriter->ReplaceText(loc, replace.getOffset(), replace.getReplaceText());
 
+#if OVERWRITE_FILES
     m_rewriter->overwriteChangedFiles();
+#endif // OVERWRITE_FILES
     return 0;
 }
 
