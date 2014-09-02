@@ -68,8 +68,8 @@ pre-build:
 
 
 build: $(OBJECTS)
-	ar rvs $(PROG) $^
-	ranlib $(PROG)
+	ar rvs $(PROG).a $^
+	ranlib $(PROG).a
 #$(CXX) -o app $^ $(LIBS) $(LLVMLDFLAGS)
 
 
@@ -80,7 +80,7 @@ $(BUILD)/%.o: $(SRC)/%.cpp
 install:
 	mkdir -p bin/ inc/
 	cp $(addprefix $(SRC)/, $(HEADERS)) ./inc/
-	mv librefactor ./bin/librefactor.a
+	mv librefactor.a ./bin/librefactor.a
 
 
 pack:

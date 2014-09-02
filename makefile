@@ -4,7 +4,7 @@ RTTIFLAG := #-fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
 
 CXXFLAGS := -std=c++11 -I./lib -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -g $(RTTIFLAG)
-LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS)) -L.
+LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS)) -L./lib
 
 SOURCES = main.cpp
 
