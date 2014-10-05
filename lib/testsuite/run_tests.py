@@ -92,7 +92,7 @@ if __name__ == "__main__":
     # run test for each subdirectory
     tests = [x[0] for x in os.walk(".")]
 
-    for test in tests[1:]:
+    for test in sorted(tests[1:]):
         do_test(test)
 
     # print some statistics
