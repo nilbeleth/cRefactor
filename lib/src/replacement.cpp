@@ -61,3 +61,67 @@ string Replacement::asString() const
     ss << m_location.asString() << ":+" << m_offset << ":\"" << m_replaceText << "\"";
     return ss.str();
 }
+
+
+/*****************************
+ *       Class Replacements  *
+ *****************************/
+int Replacements::add(Replacement item)
+{
+    _data.push_back(item);
+    return 1;
+}
+
+int Replacements::remove(const Replacement& item)
+{
+    (void) item;
+    return 0;
+}
+
+bool Replacements::operator==(const Replacements& rhs)
+{
+    if( _data.size() != rhs.size() )
+        return false;
+
+    for( auto item : _data )
+    {
+        bool found = false;
+
+        for( auto item2 : rhs )
+        {
+            if( item == item2 )
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if( found == false )
+            return false;
+    }
+
+    return true;
+}
+
+bool Replacements::operator!=(const Replacement& rhs)
+{
+    return !(*this == rhs);
+}
+
+int Replacements::operator+(const Replacements& rhs)
+{
+    (void) rhs;
+    return 0;
+}
+
+string Replacements::asString() const
+{
+    stringstream ss;
+
+    ss << "Replacements:" << endl;
+    for( auto item : _data )
+    {
+        ss << item.asString() << endl;
+    }
+    return ss.str();
+}

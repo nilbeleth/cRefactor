@@ -2,7 +2,6 @@
 #define REPLACEMENT_H
 #include <string>
 #include <vector>
-#include <set>
 #include "location.h"
 
 
@@ -72,7 +71,83 @@ class Replacement final
 
 /// A set of replacements.
 /// @todo Should be deduplicated somewhere.
-typedef std::vector<Replacement> Replacements;
+//typedef std::vector<Replacement> Replacements;
+
+
+/**
+ * @brief A container class for replacements.
+ *
+ * This class acts as a container for all replacements.
+ * The primary responsibility lies in manageing and
+ * storing replacements. It also ensures that in one
+ * container are exclusive modifications to the source
+ * text.
+ *
+ * Note that this class is simply a wrapper around
+ * STL vector container providing uniqueness for its
+ * elements.
+ *
+ * @note It could be interesting to create a wrapper
+ * template base class that could derive all container
+ * classes and possibly overload some interesting
+ * operators. Something like:
+ @code{.cpp}
+template <typename T>
+class IterableContainer
+{
+    public:
+        virtual int add(T item);
+        virtual int remove(T item);
+        T operator[](const unsingned int& index);
+        ...
+
+        T* begin();
+        const T* begin();
+        ...
+    protected:
+        std::vector<T> _data;
+    private:
+};
+ @endcode
+ */
+class Replacements
+{
+    typedef Replacement* iterator;
+    typedef const Replacement* const_iterator;
+
+    public:
+        /** Default constructor. */
+        Replacements() {}
+
+        /** Default destructor. */
+        ~Replacements() {}
+
+        int add(Replacement item);
+        int remove(const Replacement& item);
+        void clear() { _data.clear(); }
+
+        size_t size() const { return _data.size(); }
+        bool isEmpty() const { return _data.size() == 0; }
+        Replacement& operator[](const int& index) { return _data.at(index); }
+
+        bool operator==(const Replacements& rhs);
+        bool operator!=(const Replacements& rhs);
+
+        int operator+(const Replacements& rhs);
+        inline int merge(const Replacements& rhs) { return *this + rhs; }
+
+        iterator begin() { return &_data[0]; }
+        const_iterator begin() const { return &_data[0]; }
+        iterator end() { return &_data[_data.size()]; }
+        const_iterator end() const { return &_data[_data.size()]; }
+
+        std::string asString() const;
+
+    protected:
+    private:
+        std::vector<Replacement> _data;
+
+};
 
 }   // end namespace refactor
 #endif // REPLACEMENT_H

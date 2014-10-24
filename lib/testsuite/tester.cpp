@@ -49,7 +49,7 @@ IdentType parseIdentTypes(const IdentType type, string arg)
 	    arg = arg.substr(pos+1,string::npos);
 	else
 	    arg = "";
-	
+
 	// activate flags
 	if( opt == "var" )
 	    res |= type | IdentType::I_Variable;
