@@ -78,6 +78,7 @@ int Replacements::remove(const Replacement& item)
     return 0;
 }
 
+/*
 bool Replacements::operator==(const Replacements& rhs)
 {
     if( _data.size() != rhs.size() )
@@ -106,7 +107,7 @@ bool Replacements::operator==(const Replacements& rhs)
 bool Replacements::operator!=(const Replacement& rhs)
 {
     return !(*this == rhs);
-}
+}*/
 
 int Replacements::operator+(const Replacements& rhs)
 {

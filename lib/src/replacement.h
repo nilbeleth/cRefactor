@@ -112,10 +112,10 @@ class IterableContainer
  */
 class Replacements
 {
-    typedef Replacement* iterator;
-    typedef const Replacement* const_iterator;
-
     public:
+        typedef Replacement* iterator;
+        typedef const Replacement* const_iterator;
+
         /** Default constructor. */
         Replacements() {}
 
@@ -130,8 +130,8 @@ class Replacements
         bool isEmpty() const { return _data.size() == 0; }
         Replacement& operator[](const int& index) { return _data.at(index); }
 
-        bool operator==(const Replacements& rhs);
-        bool operator!=(const Replacements& rhs);
+        //bool operator==(const Replacements& rhs);
+        //bool operator!=(const Replacements& rhs);
 
         int operator+(const Replacements& rhs);
         inline int merge(const Replacements& rhs) { return *this + rhs; }

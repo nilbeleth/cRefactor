@@ -110,7 +110,7 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
 
     Location location(_astContext->getSourceManager(),loc.getLocWithOffset(offset));
     refactor::Replacements& replacements = _renamer->getChanges();
-    replacements.push_back(refactor::Replacement(location, name.size()-offset, _renamer->getNewSymbol()));
+    replacements.add(refactor::Replacement(location, name.size()-offset, _renamer->getNewSymbol()));
 
     //cout << "Declaration of (" << _renamer->getOldSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
 
@@ -150,7 +150,7 @@ bool RenamingMutator::VisitVarDecl(VarDecl* decl)
     {
         Location location(_astContext->getSourceManager(), loc);
         refactor::Replacements& replacements = _renamer->getChanges();
-        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+        replacements.add(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
         //cout << "Type usage of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
@@ -197,7 +197,7 @@ bool RenamingMutator::VisitDeclRefExpr(DeclRefExpr* expr)
 
         Location location(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
         refactor::Replacements& replacements = _renamer->getChanges();
-        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+        replacements.add(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
         //cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
@@ -238,7 +238,7 @@ bool RenamingMutator::VisitMemberExpr(MemberExpr* expr)
 
         Location location(_astContext->getSourceManager(), loc.getLocWithOffset(offset));
         refactor::Replacements& replacements = _renamer->getChanges();
-        replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+        replacements.add(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
         //cout << "Reference of (" << name << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
     }
@@ -300,7 +300,7 @@ bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameS
             {
                 Location location(_astContext->getSourceManager(), loc);
                 refactor::Replacements& replacements = _renamer->getChanges();
-                replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+                replacements.add(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
                 //cout << "Qualifier of (" << namespaceDecl->getNameAsString() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
             }
@@ -326,7 +326,7 @@ bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameS
                 {
                     Location location(_astContext->getSourceManager(), loc);
                     refactor::Replacements& replacements = _renamer->getChanges();
-                    replacements.push_back(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
+                    replacements.add(refactor::Replacement(location, _renamer->getOldSymbol().size(), _renamer->getNewSymbol()));
 
                     //cout << "Qualifier of (" << recordName << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
                 }
