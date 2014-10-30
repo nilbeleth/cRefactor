@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 
 
     // 2. step: creating a new renaming task
-    string old = "Person", novy = "Knight";
+    string old = "Struct", novy = "Knight";
     Renamer* renamer = new Renamer(&testing, old, novy);
 
 

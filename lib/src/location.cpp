@@ -59,18 +59,7 @@ bool Location::operator==(const Location& rhs)
 
 bool Location::operator!=(const Location& rhs)
 {
-    if( isValid() && rhs.isValid() )
-    {
-        if( m_line == rhs.m_line )
-            return false;
-
-        if( m_column == rhs.m_column )
-            return false;
-
-        return true;
-    }
-
-    return true;
+    return !(*this == rhs);
 }
 
 unsigned Location::getLine() const

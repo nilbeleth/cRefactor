@@ -1,6 +1,7 @@
 #include "replacement.h"
 
 #include <sstream>
+#include <iostream>
 
 
 using namespace std;
@@ -38,12 +39,18 @@ bool Replacement::isApplicable() const
 
 bool Replacement::operator==(const Replacement& rhs)
 {
+    cout << endl << "Location: " << endl;
+    cout << "\t" << m_location.asString() << endl;
+    cout << "\t" << rhs.m_location.asString() << endl;
+
     if( m_location != rhs.m_location )
         return false;
 
+    cout << "Offset: " << m_offset << " <-> " << rhs.m_offset << endl;
     if( m_offset != rhs.m_offset )
         return false;
 
+    cout << "ReplaceText: " << m_replaceText << " <-> " << rhs.m_replaceText << endl;
     if( m_replaceText != rhs.m_replaceText )
         return false;
 
@@ -68,6 +75,17 @@ string Replacement::asString() const
  *****************************/
 int Replacements::add(Replacement item)
 {
+    cout << item.asString() << ": ";
+    for( auto replacement : _data )
+    {
+        if( item == replacement )
+        {
+            cout << "rejected as opposed to: " << replacement.asString() << "\n";
+            return 0;
+        }
+    }
+
+    cout << "accepted\n";
     _data.push_back(item);
     return 1;
 }
