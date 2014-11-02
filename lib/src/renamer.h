@@ -29,7 +29,7 @@ enum class IdentType : unsigned int
     I_EnumName      = 0x0020,     /**< An enumeration name. */
     I_ClassMember   = 0x0040,     /**< A class member variable. */
     I_StructMember  = 0x0080,     /**< A struct member variable. */
-    I_UnionMember   = 0x0100,     /**< A union member variable. */      // FIXME (nilbeleth#1#): typo
+    I_UnionMember   = 0x0100,     /**< A union member variable. */
     I_EnumItem      = 0x0200,     /**< An enumeration item. */
     I_FunctionName  = 0x0400,     /**< Function. */
     I_MethodName    = 0x0800,     /**< A class instance method.*/
