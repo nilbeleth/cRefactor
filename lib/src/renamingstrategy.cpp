@@ -55,7 +55,7 @@ IdentType RenamingStrategy::identify(const Decl* decl) const
         else if( recordDecl->isStruct() )
             return IdentType::I_StructMember;
         else if( recordDecl->isUnion() )
-            return IdentType::I_UnionMemeber;
+            return IdentType::I_UnionMember;
         else
             WARNING("Unable to distinguish between class, struct and union member.");
     }
