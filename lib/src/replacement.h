@@ -69,10 +69,6 @@ class Replacement final
 };
 
 
-/// A set of replacements.
-/// @todo Should be deduplicated somewhere.
-//typedef std::vector<Replacement> Replacements;
-
 
 /**
  * @brief A container class for replacements.
@@ -130,6 +126,7 @@ class Replacements
         bool isEmpty() const { return _data.size() == 0; }
         Replacement& operator[](const int& index) { return _data.at(index); }
 
+// TODO (nilbeleth#5#): s tymto == by som casom daco mohol spravit
         //bool operator==(const Replacements& rhs);
         //bool operator!=(const Replacements& rhs);
 

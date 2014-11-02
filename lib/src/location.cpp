@@ -26,7 +26,7 @@ Location::Location(const std::string filePath, const unsigned position)
 Location::Location(const std::string filePath, const unsigned line, const unsigned column)
     : m_filePath(filePath), m_line(line), m_column(column)
 {
-    // TODO (nilbeleth#1#): kontrola ci neprechadza za koniec a column posunut dalej
+    // TODO (nilbeleth#5#): kontrola ci neprechadza za koniec a column posunut dalej
 }
 
 Location::Location(const SourceManager& SM, const SourceLocation loc)
@@ -45,6 +45,8 @@ bool Location::operator==(const Location& rhs)
 {
     if( isValid() && rhs.isValid() )
     {
+// TODO (nilbeleth#3#): sak tu nie je porovnavanie samotneho suboru
+
         if( m_line != rhs.m_line )
             return false;
 
@@ -98,10 +100,7 @@ SourceLocation Location::getAsSourceLocation(SourceManager& SM) const
 
         SourceLocation start = SM.translateLineCol(ID, m_line, m_column);
 
-        //const SourceLocation start = SM.getLocForStartOfFile(ID);
-        //DEBUG("Location translated as: " << start.printToString(SM));
-        //if( location.isValid() )
-            return start;
+        return start;
     }
 
     return SourceLocation();

@@ -72,13 +72,10 @@ int Task::commit()
 
     int result = 0;
 
-    for(Replacements::const_iterator it = m_replacements.begin(), e = m_replacements.end(); it != e; ++it)
+    for( auto const &replacement : m_replacements )
     {
-        result |= applyChange(*it);
+        result |= applyChange(replacement);
     }
-
-    //m_rewriter->overwriteChangedFiles();
-
 /*
     const FileEntry* entry = m_rewriter->getSourceMgr().getFileManager().getFile("test.cpp");
     if( entry == nullptr )
