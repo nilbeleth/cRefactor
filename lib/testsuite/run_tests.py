@@ -14,7 +14,7 @@ class colors:
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
-
+# end class colors
 
 def print_success(msg):
     space = ""
@@ -23,7 +23,6 @@ def print_success(msg):
     print(msg + "..." + space + "[ " + colors.OKGREEN + "ok" + colors.ENDC + " ]")
 # end function print_success
 
-
 def print_failed(msg):
     space = ""
     for i in range(len(msg), 74):
@@ -31,8 +30,13 @@ def print_failed(msg):
     print(msg + "..." + space + "[" + colors.FAIL + "fail" + colors.ENDC + "]")
 # end function print_failed
 
+def do_test(dir, verbose=False):
+    if not os.path.isdir(dir):
+        print "ERROR: no test named \"%s\"." % dir
+        return 1
 
-def do_test(dir):
+    output = ""
+
     with open(os.path.join(dir,"args"),'r') as argfile:
         args = argfile.read().replace('\n','')
         argfile.close()
@@ -44,16 +48,19 @@ def do_test(dir):
                 file = os.path.join(dir,f)
                 (source,sep,suffix) = file.rpartition('.')
                 shutil.copy(file, source)
-                #print("cp " + file + " " + source)
+                output += "  cp " + file + " " + source + "\n"
 
                 # aggregate source files
                 files = source + " " + files
     if files == "":
-        return
+        print "ERROR: no files found in test directory \"%s\"" % dir
+        return 1
+
     # run tester
     ret = commands.getstatusoutput("./tester " + args + " " + files)
-    #print("./tester " + args + " " + files)
-    #print(ret[1])
+    output += "  ./tester " + args + " " + files + "\n"
+    for line in ret[1].split("\n"):
+        output += "  " + line + "\n"
 
     # diff it with reference and then delete it
     diffs = 0
@@ -73,12 +80,23 @@ def do_test(dir):
         with open("results",'a') as file:
             file.write(errmsg)
             file.close()
+    if verbose:
+        print output
 # end function do_test()
 
+def run_all_tests():
+    # run test for each subdirectory
+    tests = [x[0] for x in os.walk(".")]
 
+    for test in sorted(tests[1:]):
+        do_test(test)
+# end function run_all_tests()
 
 if __name__ == "__main__":
-    os.remove('results')
+    try:
+        os.remove('results')
+    except OSError as ex:
+        pass    # ignore if no 'results'
 
     # compilation
     ret = commands.getstatusoutput('make')
@@ -89,11 +107,12 @@ if __name__ == "__main__":
         print_success("Compilation")
 
 
-    # run test for each subdirectory
-    tests = [x[0] for x in os.walk(".")]
-
-    for test in sorted(tests[1:]):
-        do_test(test)
+    #run_all_tests()
+    if len(sys.argv) == 1:
+        run_all_tests()
+    else:
+        for test in sys.argv[1:]:
+            do_test(test, True)
 
     # print some statistics
 
