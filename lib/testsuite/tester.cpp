@@ -38,53 +38,56 @@ void printHelp()
 }
 
 
-IdentType parseIdentTypes(const IdentType type, string arg)
+IdentType parseIdentTypes(const string arg)
 {
-    IdentType res;
+    IdentType res = IdentType::I_Unknown;
+    string opt, args = arg;
     do {
-        string opt;
-    	size_t pos = arg.find_first_of(',');
-	opt = arg.substr(0,pos);
-	if( pos != string::npos )
-	    arg = arg.substr(pos+1,string::npos);
-	else
-	    arg = "";
+    	size_t pos = args.find_first_of(',');
+        opt = args.substr(0,pos);
 
-	// activate flags
-	if( opt == "var" )
-	    res |= type | IdentType::I_Variable;
-	else if( opt == "arg" )
-	    res |= type | IdentType::I_Argument;
-	else if( opt == "cls" )
-	    res |= type | IdentType::I_ClassName;
-	else if( opt == "src" )
-	    res |= type | IdentType::I_StructName;
-	else if( opt == "un" )
-	    res |= type | IdentType::I_UnionName;
-	else if( opt == "en" )
-	    res |= type | IdentType::I_EnumName;
-	else if( opt == "cmem" )
-	    res |= type | IdentType::I_ClassMember;
-	else if( opt == "smem" )
-	    res |= type | IdentType::I_StructMember;
-	else if( opt == "umem" )
-	    res |= type | IdentType::I_UnionMemeber;
-	else if( opt == "eit" )
-	    res |= type | IdentType::I_EnumItem;
-	else if( opt == "fun" )
-	    res |= type | IdentType::I_FunctionName;
-	else if( opt == "met" )
-	    res |= type | IdentType::I_MethodName;
-	else if( opt == "tpd" )
-	    res |= type | IdentType::I_Typedef;
-	else if( opt == "lbl" )
-	    res |= type | IdentType::I_Label;
-	else if( opt == "ns" )
-	    res |= type | IdentType::I_Namespace;
-	else
-	    cerr << "Unrecognized type !!!" << endl;
+        // activate flags
+        if( opt == "var" )
+            res = res | type | IdentType::I_Variable;
+        else if( opt == "arg" )
+            res = res | type | IdentType::I_Argument;
+        else if( opt == "cls" )
+            res = res | type | IdentType::I_ClassName;
+        else if( opt == "src" )
+            res = res | type | IdentType::I_StructName;
+        else if( opt == "un" )
+            res = res | type | IdentType::I_UnionName;
+        else if( opt == "en" )
+            res = res | type | IdentType::I_EnumName;
+        else if( opt == "cmem" )
+            res = res | type | IdentType::I_ClassMember;
+        else if( opt == "smem" )
+            res = res | type | IdentType::I_StructMember;
+        else if( opt == "umem" )
+            res = res | type | IdentType::I_UnionMember;
+        else if( opt == "eit" )
+            res = res | type | IdentType::I_EnumItem;
+        else if( opt == "fun" )
+            res = res | type | IdentType::I_FunctionName;
+        else if( opt == "met" )
+            res = res | type | IdentType::I_MethodName;
+        else if( opt == "tpd" )
+            res = res | type | IdentType::I_Typedef;
+        else if( opt == "lbl" )
+            res = res | type | IdentType::I_Label;
+        else if( opt == "ns" )
+            res = res | type | IdentType::I_Namespace;
+        else
+            cerr << "ERROR: type \"" << opt << "\" not recognized." << endl;
 
-    }while(!arg.empty());
+        if( pos != string::npos )
+        {
+            args = args.substr(pos+1,string::npos);
+        }
+        else
+            break;
+
+    }while(true);
 
     return res;
 }
@@ -131,7 +134,7 @@ int parseArgs(int argc, char* argv[])
                 newSymbol = optarg;
                 break;
 	    case 'r':
-	    	type = parseIdentTypes(type,optarg);
+	    	type = parseIdentTypes(optarg);
 	    	break;
             case 'F':
                 mode = M_Formatting;

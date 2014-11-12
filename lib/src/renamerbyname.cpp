@@ -104,14 +104,12 @@ bool RenamingMutator::VisitNamedDecl(NamedDecl* decl)
         return true;
     }
 
-    // is this type we are looking for?
     if( !(_renamer->getRestrictType() & _renamer->identify(decl)) )
         return true;
 
     Location location(_astContext->getSourceManager(),loc.getLocWithOffset(offset));
     refactor::Replacements& replacements = _renamer->getChanges();
     replacements.add(refactor::Replacement(location, name.size()-offset, _renamer->getNewSymbol()));
-
     //cout << "Declaration of (" << _renamer->getOldSymbol() << ") at " << loc.printToString(_astContext->getSourceManager()) << endl;
 
     return true;
@@ -144,8 +142,6 @@ bool RenamingMutator::VisitVarDecl(VarDecl* decl)
     if( !(_renamer->getRestrictType() & _renamer->identify(name)) )
         return true;
 
-    // Type
-    DEBUG("Probing: " << name)
     if( checkTypeIdent(name, _renamer->getOldSymbol()) )
     {
         Location location(_astContext->getSourceManager(), loc);
