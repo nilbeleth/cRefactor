@@ -104,7 +104,7 @@ class RenamerByName final : public RenamingStrategy
 class LocatorRenamer final  : public RenamingStrategy
 {
     public:
-        LocatorRenamer();
+        LocatorRenamer(Resource* resource, const Location& loc, const std::string& newSymbol);
         ~LocatorRenamer() {}
 
         int analyze() override;

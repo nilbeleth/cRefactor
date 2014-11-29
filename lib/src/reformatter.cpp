@@ -26,6 +26,7 @@ using namespace refactor;
 
 static int format(const string& filename)
 {
+    (void) filename;
     /*
     FileManager files(FileSystemOptions());
     DiagnosticsEngine diags(IntrusiveRefCntPtr<DiagnosticIDs>(new DiagnosticIDs), new DiagnosticOptions);

@@ -76,6 +76,11 @@ inline constexpr IdentType operator^=(IdentType __x, IdentType __y)
     return __x ^ __y;
 }
 
+inline constexpr bool operator!(const IdentType __x)
+{
+    return __x == IdentType::I_All ? false : true;
+}
+
 
 /**
  * @brief Rename a identifier.

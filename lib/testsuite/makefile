@@ -1,10 +1,10 @@
-CXX := clang++
+CXX := g++
 LLVMCOMPONENTS := cppbackend
 RTTIFLAG := #-fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
 
 CXXFLAGS := -std=c++11 -I../inc -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -g $(RTTIFLAG)
-LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS)) -L../bin/
+LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs --system-libs $(LLVMCOMPONENTS)) -L../bin/
 
 SOURCES = tester.cpp
 
@@ -25,13 +25,15 @@ LIBS = \
 				-lclangStaticAnalyzerCore\
 				-lclangAnalysis\
 				-lclangARCMigrate\
+				-lclangRewrite\
 				-lclangRewriteFrontend\
-				-lclangRewriteCore\
+				-lclangApplyReplacements\
 				-lclangEdit\
 				-lclangAST\
 				-lclangLex\
 				-lclangASTMatchers\
 				-lclangBasic\
+				-lclangIndex\
 				$(shell $(LLVMCONFIG) --libs)\
 
 all: build

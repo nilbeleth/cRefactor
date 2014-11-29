@@ -1,4 +1,5 @@
 #include "replacement.h"
+#include "debug.h"
 
 #include <sstream>
 #include <iostream>
@@ -78,7 +79,10 @@ int Replacements::add(Replacement item)
     for( auto const &replacement : _data )
     {
         if( item == replacement )
+        {
+            INFO("Duplicated finding: " << item.asString());
             return 0;
+        }
     }
 
     _data.push_back(item);
@@ -88,6 +92,7 @@ int Replacements::add(Replacement item)
 int Replacements::remove(const Replacement& item)
 {
     (void) item;
+    ERROR("Not yet implemented.")
     return 0;
 }
 
