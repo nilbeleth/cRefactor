@@ -71,10 +71,8 @@ class RenamingMutator : public ASTConsumer, public RecursiveASTVisitor<RenamingM
 void RenamingMutator::HandleTranslationUnit(ASTContext& context)
 {
     _astContext = &context;
-    cout << "1.1.1" << endl;
     TranslationUnitDecl* D = context.getTranslationUnitDecl();
     TraverseDecl(D);
-    cout << "1.1.2" << endl;
     _astContext = nullptr;
 }
 
@@ -349,22 +347,6 @@ bool RenamingMutator::checkQualifier(NestedNameSpecifier* qualifier, NestedNameS
  *   Class FrontendActionFactory  *
  **********************************/
 // do nothing more than return a correct Visitor
-/*class RenamingActionFactory
-{
-    RenamerByName* _renamer;
-
-    public:
-        RenamingActionFactory(RenamerByName* renamer)
-            : _renamer(renamer)
-        { }
-
-        virtual clang::ASTConsumer *newASTConsumer()
-        {
-            return new RenamingMutator(_renamer);
-        }
-};*/
-
-
 class RenamingAction : public clang::ASTFrontendAction
 {
     RenamerByName* _renamer;
@@ -378,35 +360,22 @@ class RenamingAction : public clang::ASTFrontendAction
         {
             (void) Compiler;
             (void) InFile;
-            //return std::unique_ptr<RenamingMutator>(new RenamingMutator(_renamer)).get();
+
             return new RenamingMutator(_renamer);
         }
 };
-
-
-/*
-class FindNamedClassAction : public clang::ASTFrontendAction {
-    public:
-        virtual std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile)
-        {
-            return std::unique_ptr<clang::ASTConsumer>(new FindNamedClassConsumer(&Compiler.getASTContext()));
-        }
-};
-*/
 
 /************************************
  *
  ************************************/
 class RenamingActionFactory : public clang::tooling::FrontendActionFactory
 {
-    RenamerByName* _renamer;
     RenamingAction* _action;
 
     public:
         explicit RenamingActionFactory(RenamerByName* renamer)
-            : _renamer(renamer), _action(nullptr)
+            : _action(nullptr)
         {
-            cout << "test1.1" << endl;
             _action = new RenamingAction(renamer);
         }
 
@@ -418,7 +387,6 @@ class RenamingActionFactory : public clang::tooling::FrontendActionFactory
 
         virtual clang::FrontendAction* create()
         {
-            cout << "test1.2" << endl;
             return _action;
         }
 };
@@ -439,6 +407,8 @@ RenamerByName::~RenamerByName()
 
 int RenamerByName::analyze()
 {
+    int res = 0;
+
     // ensure compilation DB is present
     string buildPath = "./";            // TODO (nilbeleth#1#): porozmyslaj nad dakou dynamickou cestou k buildPath
     if( File::exists(buildPath + COMPILE_DB_FILE) )
@@ -454,8 +424,6 @@ int RenamerByName::analyze()
 
     // and parse it
     string errMsg;
-    //llvm::OwningPtr<CompilationDatabase> compilations(CompilationDatabase::loadFromDirectory(buildPath, errMsg));
-    //CompilationDatabase* compilations = new CompilationDatabase(CompilationDatabase::loadFromDirectory(buildPath, errMsg));
     CompilationDatabase* compilations = CompilationDatabase::loadFromDirectory(buildPath, errMsg);
     if( !compilations )
     {
@@ -463,15 +431,18 @@ int RenamerByName::analyze()
         return 1;
     }
 
-    cout << "test1" << endl;
     RefactoringTool tool(*compilations, getResource()->getSources());
-    //RenamingActionFactory* finder = new RenamingActionFactory(this);
     ToolAction* factory = new RenamingActionFactory(this);
     if( !factory )
-        cout << "Facotry dojebabrane" << endl;
-    int res = tool.run(factory);
-    cout << "test2" << endl;
+    {
+        ERROR("Unable to run analysis: Renaming factory not created.")
+        return 1;
+    }
+    res = tool.run(factory);
+
+    // some clean-up
     delete compilations;
-    //delete finder;
+    //delete factory;
+
     return res;
 }

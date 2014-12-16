@@ -10,19 +10,19 @@ SRC = ./src
 BUILD = ./obj
 SOURCES = location.cpp resource.cpp replacement.cpp \
 	  task.cpp renamer.cpp reformatter.cpp extractor.cpp \
-	  logger.cpp utils.cpp renamingstrategy.cpp renamerbyname.cpp locatorrenamer.cpp
+	  logger.cpp utils.cpp renamingstrategy.cpp renamerbyname.cpp
 HEADERS = location.h resource.h replacement.h \
 	  task.h renamer.h reformatter.h extractor.h \
 	  logger.h defines.h
 
 
-CXX = clang++
+CXX = g++
 LLVMCOMPONENTS := cppbackend
 RTTIFLAG := #-fno-rtti
 LLVMCONFIG := /usr/bin/llvm-config
 
 CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) --obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) -I./src $(RTTIFLAG) -g
-LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --system-libs --libs $(LLVMCOMPONENTS))
+LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 
 OBJECTS = $(patsubst %,$(BUILD)/%,$(SOURCES:.cpp=.o))
@@ -42,17 +42,15 @@ LIBS = \
 		-lclangStaticAnalyzerCore\
 		-lclangAnalysis\
 		-lclangARCMigrate\
-		-lclangRewrite\
 		-lclangRewriteFrontend\
-		-lclangApplyReplacements\
+		-lclangRewriteCore\
 		-lclangEdit\
 		-lclangAST\
 		-lclangASTMatchers\
 		-lclangLex\
 		-lclangBasic\
-		-lclangIndex\
 		$(shell $(LLVMCONFIG) --libs)\
-
+		-lcurses
 PROG = librefactor
 
 
