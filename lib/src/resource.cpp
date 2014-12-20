@@ -185,6 +185,7 @@ Project::Project()
 
     // TODO (nilbeleth#1#): defaultne kvoli tomu stdarg.h (implicitne to byva s clangom)
     m_libPaths.push_back("/usr/lib64/clang/3.4/include/");
+    m_libPaths.push_back("/usr/lib64/clang/3.5.0/include/");
 }
 
 //

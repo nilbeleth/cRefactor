@@ -61,6 +61,10 @@ int Renamer::analyze()
     int result = m_impl->analyze();
     m_replacements = m_impl->getChanges();
 
+    DEBUG("New replacments:")
+    for( auto replacement : m_replacements )
+        DEBUG(replacement.asString())
+
     return result;
 }
 

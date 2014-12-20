@@ -440,8 +440,11 @@ int RenamerByName::analyze()
     }
     res = tool.run(factory);
 
+    for(auto replacement : m_replacements )
+        DEBUG(replacement.asString())
+
     // some clean-up
-    delete compilations;
+    //delete compilations;
     //delete factory;
 
     return res;
