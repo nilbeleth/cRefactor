@@ -44,5 +44,10 @@ auto as_integer(Enumeration const value)
     return static_cast<typename std::underlying_type<Enumeration>::type>(value);
 }
 
+/**
+ *
+ */
+template<typename T1> void ignore(T1 const&) {}
+
 }   // end namespace refactor
 #endif // UTILS_H

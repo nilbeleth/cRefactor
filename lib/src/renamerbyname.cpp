@@ -358,8 +358,8 @@ class RenamingAction : public clang::ASTFrontendAction
 
         virtual RenamingMutator* CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile)
         {
-            (void) Compiler;
-            (void) InFile;
+            refactor::ignore(Compiler);
+            refactor::ignore(InFile);
 
             return new RenamingMutator(_renamer);
         }

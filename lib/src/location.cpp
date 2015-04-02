@@ -1,5 +1,6 @@
 #include "location.h"
 #include "debug.h"
+#include "utils.h"
 
 #include <iostream>
 #include <sstream>
@@ -18,8 +19,8 @@ using namespace refactor;
 Location::Location(const std::string filePath, const unsigned position)
     : m_filePath(""), m_line(1), m_column(1)
 {
-    (void) filePath;
-    (void) position;
+    ignore(filePath);
+    ignore(position);
     ERROR("Not yet implemented.")
 }
 

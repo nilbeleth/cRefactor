@@ -1,5 +1,6 @@
 #include "replacement.h"
 #include "debug.h"
+#include "utils.h"
 
 #include <sstream>
 #include <iostream>
@@ -91,7 +92,7 @@ int Replacements::add(Replacement item)
 
 int Replacements::remove(const Replacement& item)
 {
-    (void) item;
+    ignore(item);
     ERROR("Not yet implemented.")
     return 0;
 }
@@ -129,7 +130,7 @@ bool Replacements::operator!=(const Replacement& rhs)
 
 int Replacements::operator+(const Replacements& rhs)
 {
-    (void) rhs;
+    ignore(rhs);
     return 0;
 }
 

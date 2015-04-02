@@ -38,9 +38,9 @@ Renamer::Renamer(Resource* resource, const string& origSymbol, const string& new
 //
 Renamer::Renamer(Resource* resource, const Location& loc, const string& newSymbol)
 {
-    (void) resource;
-    (void) loc;
-    (void) newSymbol;
+    ignore(resource);
+    ignore(loc);
+    ignore(newSymbol);
     ERROR("Not yet imeplemented.")
 }
 

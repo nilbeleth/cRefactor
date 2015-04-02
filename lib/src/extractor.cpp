@@ -1,5 +1,6 @@
 #include "extractor.h"
 #include "debug.h"
+#include "utils.h"
 
 
 using namespace refactor;
@@ -8,16 +9,16 @@ using namespace refactor;
 
 Extractor::Extractor(Resource* resource, const Location& begin, const Location& end)
 {
-    (void) resource;
-    (void) begin;
-    (void) end;
+    ignore(resource);
+    ignore(begin);
+    ignore(end);
     ERROR("Not yet implemented.")
 }
 
 Extractor::Extractor(Resource* resource, const LocationRange& range)
 {
-    (void) resource;
-    (void) range;
+    ignore(resource);
+    ignore(range);
     ERROR("Not yet implemented.")
 }
 

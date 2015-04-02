@@ -57,14 +57,14 @@ std::string File::asString() const
 
 int File::load(const string& filename)
 {
-    (void) filename;
+    ignore(filename);
     ERROR("Not yet implemented.")
     return 0;
 }
 
 int File::unload(const string& filename)
 {
-    (void) filename;
+    ignore(filename);
     ERROR("Not yet implemented.")
     return 0;
 }
@@ -191,7 +191,7 @@ Project::Project()
 //
 Project::Project(const std::string dir)
 {
-    (void) dir;
+    ignore(dir);
     ERROR("Not yet implemeted.")
 }
 
@@ -234,7 +234,7 @@ int Project::load(const string& filename)
 //
 int Project::unload(const string& filename)
 {
-    (void) filename;
+    ignore(filename);
     ERROR("Not yet imeplemented.")
     return 0;
 }

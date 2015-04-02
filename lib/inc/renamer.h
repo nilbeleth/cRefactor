@@ -38,6 +38,7 @@ enum class IdentType : unsigned int
     I_Namespace     = 0x4000,     /**< Namespace identifier. */
 //    I_MacroName,        /**< */
 //    I_MacroParm,        /**< */
+    I_StdType       = 0x8000,
     I_All           = 0x7FFF
 };
 

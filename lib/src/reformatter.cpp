@@ -1,5 +1,6 @@
 #include "reformatter.h"
 #include "debug.h"
+#include "utils.h"
 
 #include <clang/Basic/Diagnostic.h>
 #include <clang/Basic/DiagnosticOptions.h>
@@ -26,7 +27,7 @@ using namespace refactor;
 
 static int format(const string& filename)
 {
-    (void) filename;
+    refactor::ignore(filename);
     /*
     FileManager files(FileSystemOptions());
     DiagnosticsEngine diags(IntrusiveRefCntPtr<DiagnosticIDs>(new DiagnosticIDs), new DiagnosticOptions);
@@ -57,8 +58,8 @@ static int format(const string& filename)
  *****************************/
 Reformatter::Reformatter(Resource* resource, CodeStyle style)
 {
-    (void) resource;
-    (void) style;
+    ignore(resource);
+    ignore(style);
     ERROR("Not yet implemented.")
     //ctor
 }
